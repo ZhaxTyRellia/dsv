@@ -35,6 +35,6 @@ return [
     ],
     'license' => [
         'file_path' => $_ENV['LICENSE_FILE_PATH'] ?? 'C:\\127.0.0.1\\license.key',
-        'secret_salt' => $_ENV['LICENSE_SECRET_SALT'] ?? 'MTP-Production!!!',
+        'secret_salt' => $_ENV['LICENSE_SECRET_SALT'] ?? 'GautavarisKey!!!',
     ],
 ];
