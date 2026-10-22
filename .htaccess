@@ -2,9 +2,11 @@ Options -Indexes
 
 RewriteEngine On
 
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^(.*)$ $1.php [L]
+# Allow direct access to static files that exist on disk
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
 
-ErrorDocument 403 /dsv/403.php
-ErrorDocument 404 /dsv/404.php
+# Route all requests to public/index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ public/index.php [QSA,L]
