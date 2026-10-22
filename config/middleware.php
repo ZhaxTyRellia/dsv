@@ -28,9 +28,6 @@ return function (App $app) {
     // Slim Routing
     $app->addRoutingMiddleware();
 
-    // Base Path Middleware
-    $app->add(new BasePathMiddleware($app));
-
     // Error Handling Middleware (outermost)
     $errorMiddleware = $app->addErrorMiddleware(
         $settings['app']['debug'],

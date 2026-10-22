@@ -4,10 +4,15 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    let activeTheme = "<?= htmlspecialchars($activeTheme); ?>";
+    let activeTheme = "";
+    const currentThemeLink = document.getElementById('theme-stylesheet');
+    if (currentThemeLink && currentThemeLink.getAttribute('href')) {
+        const parts = currentThemeLink.getAttribute('href').split('/');
+        activeTheme = parts[parts.length - 1].split('?')[0];
+    }
 
     function checkDatabaseTheme() {
-        fetch('/dsv/app/control/get_themes.php')
+        fetch('/dsv/api/themes')
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success' && data.theme) {

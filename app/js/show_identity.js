@@ -1,5 +1,5 @@
 function refreshIdentity() {
-    fetch('/dsv/app/control/get_identity.php')
+    fetch('/dsv/api/identity')
         .then(response => response.json())
         .then(data => {
             document.getElementById('header-title-text').textContent = data.title;

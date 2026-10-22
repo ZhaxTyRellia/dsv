@@ -1,22 +1,7 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/dsv/app/bridge.php';
 
-$response = [
-    'logoUrl' => '',
-    'title'   => '',
-    'name'    => '',
-    'marquee' => ''
-];
+declare(strict_types=1);
 
-$identity = mysqli_query($bridge, "SELECT * FROM identity LIMIT 1");
-if ($identity && mysqli_num_rows($identity) > 0) {
-    $row = mysqli_fetch_assoc($identity);
-    $response['logoUrl'] = $row['logo'] ? htmlspecialchars($row['logo']) : '';
-    $response['title']   = $row['title'] ?? '';
-    $response['name']    = $row['name'] ?? '';
-    $response['marquee']    = $row['marquee'] ?? '';
-}
-
-header('Content-Type: application/json');
-echo json_encode($response);
+// Backward-compatible forwarder to Slim v4 API
+header('Location: /dsv/api/identity');
 exit;

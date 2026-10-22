@@ -26,6 +26,6 @@ function selectThemeCard(radioInput, themeValue) {
 function updateThemePreview(themeValue) {
     const frame = document.getElementById('themePreviewFrame');
     if (frame) {
-        frame.src = 'show.php?preview_theme=' + themeValue;
+        frame.src = '/dsv/show?preview_theme=' + encodeURIComponent(themeValue);
     }
 }

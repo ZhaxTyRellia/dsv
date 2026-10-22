@@ -1,5 +1,6 @@
-/vendor/
+vendor/
 .env
 *.log
 .DS_Store
 Thumbs.db
+public/app
