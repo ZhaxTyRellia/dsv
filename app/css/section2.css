@@ -1,0 +1,195 @@
+.currency-container {
+    padding: 24px;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+}
+
+.form-section {
+    margin-bottom: 32px;
+    padding: 28px;
+    border: none;
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.section-title {
+    margin-top: 0;
+    color: #1e293b;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+}
+
+.currency-form {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 6px;
+    font-weight: 500;
+    font-size: 13px;
+    color: #475569;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #334155;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+    height: 42px;
+    /* Memastikan tinggi select dan input presisi */
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* Pembagian Lebar Grid Kolom Form */
+.fg-code {
+    flex: 1.2;
+    min-width: 160px;
+}
+
+.fg-name {
+    flex: 2;
+    min-width: 200px;
+}
+
+.fg-rate {
+    flex: 1.2;
+    min-width: 140px;
+}
+
+.btn-submit {
+    padding: 0 24px;
+    height: 42px;
+    background: linear-gradient(150deg, #6366f1 0%, #10b981 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.btn-submit:hover {
+    background-color: #059669;
+}
+
+.divider {
+    border: 0;
+    border-top: 1px solid #e2e8f0;
+    margin: 32px 0;
+}
+
+.table-section {
+    background-color: #ffffff;
+    padding: 28px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.table-responsive {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.currency-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    font-size: 14px;
+    text-align: left;
+}
+
+.currency-table th {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+    padding: 14px 16px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.currency-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+}
+
+.currency-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+}
+
+.currency-table th:last-child {
+    min-width: 140px;
+}
+
+.btn-action-edit,
+.btn-action-delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.btn-action-edit {
+    background-color: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+    margin-right: 8px;
+}
+
+.btn-action-edit:hover {
+    background-color: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+}
+
+.btn-action-delete {
+    background-color: #fef2f2;
+    color: #ef4444;
+    border: 1px solid #fee2e2;
+}
+
+.btn-action-delete:hover {
+    background-color: #ef4444;
+    color: #ffffff;
+    border-color: #ef4444;
+}
+
+.currency-table td {
+    vertical-align: middle;
+}
