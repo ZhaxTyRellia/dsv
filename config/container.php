@@ -45,9 +45,8 @@ $containerBuilder->addDefinitions([
         return new PhpRenderer($templatesPath);
     },
 
-    LicenseService::class => function (ContainerInterface $c) {
-        $licenseSettings = $c->get('settings')['license'];
-        return new LicenseService($licenseSettings['file_path'], $licenseSettings['secret_salt']);
+    LicenseService::class => function () {
+        return new LicenseService();
     },
 
     IdentityRepository::class => function (ContainerInterface $c) {
