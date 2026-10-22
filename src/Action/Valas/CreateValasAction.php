@@ -9,15 +9,20 @@ use App\Domain\Valas\ValasRepository;
 use App\Support\FlashMessage;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Slim\Interfaces\RouteParserInterface;
 use Slim\Views\PhpRenderer;
 
 class CreateValasAction extends ActionBase
 {
     private ValasRepository $valasRepo;
 
-    public function __construct(PhpRenderer $renderer, FlashMessage $flash, ValasRepository $valasRepo)
-    {
-        parent::__construct($renderer, $flash);
+    public function __construct(
+        PhpRenderer $renderer,
+        FlashMessage $flash,
+        RouteParserInterface $routeParser,
+        ValasRepository $valasRepo
+    ) {
+        parent::__construct($renderer, $flash, $routeParser);
         $this->valasRepo = $valasRepo;
     }
 
@@ -39,7 +44,7 @@ class CreateValasAction extends ActionBase
 
         if (empty($currencyCode) || empty($currencyName)) {
             $this->flash->add('warning', 'Please select a currency and enter a valid name.');
-            return $this->redirect($response, './?tab=2');
+            return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '2']);
         }
 
         $success = $this->valasRepo->create($currencyCode, $currencyName, $flagImage, $buyRate, $sellRate);
@@ -50,6 +55,6 @@ class CreateValasAction extends ActionBase
             $this->flash->add('danger', 'Failed to save exchange rate data.');
         }
 
-        return $this->redirect($response, './?tab=2');
+        return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '2']);
     }
 }

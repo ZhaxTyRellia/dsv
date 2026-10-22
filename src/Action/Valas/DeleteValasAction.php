@@ -9,15 +9,20 @@ use App\Domain\Valas\ValasRepository;
 use App\Support\FlashMessage;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Slim\Interfaces\RouteParserInterface;
 use Slim\Views\PhpRenderer;
 
 class DeleteValasAction extends ActionBase
 {
     private ValasRepository $valasRepo;
 
-    public function __construct(PhpRenderer $renderer, FlashMessage $flash, ValasRepository $valasRepo)
-    {
-        parent::__construct($renderer, $flash);
+    public function __construct(
+        PhpRenderer $renderer,
+        FlashMessage $flash,
+        RouteParserInterface $routeParser,
+        ValasRepository $valasRepo
+    ) {
+        parent::__construct($renderer, $flash, $routeParser);
         $this->valasRepo = $valasRepo;
     }
 
@@ -40,6 +45,6 @@ class DeleteValasAction extends ActionBase
             $this->flash->add('warning', 'Invalid ID for exchange rate.');
         }
 
-        return $this->redirect($response, './?tab=2');
+        return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '2']);
     }
 }

@@ -9,15 +9,20 @@ use App\Domain\Deposit\DepositRepository;
 use App\Support\FlashMessage;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Slim\Interfaces\RouteParserInterface;
 use Slim\Views\PhpRenderer;
 
 class CreateDepositAction extends ActionBase
 {
     private DepositRepository $depositRepo;
 
-    public function __construct(PhpRenderer $renderer, FlashMessage $flash, DepositRepository $depositRepo)
-    {
-        parent::__construct($renderer, $flash);
+    public function __construct(
+        PhpRenderer $renderer,
+        FlashMessage $flash,
+        RouteParserInterface $routeParser,
+        DepositRepository $depositRepo
+    ) {
+        parent::__construct($renderer, $flash, $routeParser);
         $this->depositRepo = $depositRepo;
     }
 
@@ -37,7 +42,7 @@ class CreateDepositAction extends ActionBase
 
         if (empty($tenor)) {
             $this->flash->add('warning', 'Tenor cannot be empty.');
-            return $this->redirect($response, './?tab=3');
+            return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '3']);
         }
 
         $success = $this->depositRepo->create($depIndex, $tenor, $interestRate, $minAmount, $description);
@@ -48,6 +53,6 @@ class CreateDepositAction extends ActionBase
             $this->flash->add('danger', 'Gagal menambahkan data Deposito.');
         }
 
-        return $this->redirect($response, './?tab=3');
+        return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '3']);
     }
 }

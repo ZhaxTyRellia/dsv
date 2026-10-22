@@ -12,7 +12,7 @@
         <!-- MODAL EDIT DEPOSITO -->
         <dialog id="editDepositModal" style="border: none; border-radius: 12px; padding: 24px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); width: 420px; max-width: 90%;">
             <h4 style="margin-top: 0; margin-bottom: 16px; color: #1e293b;">Edit Data Deposito</h4>
-            <form method="POST" action="/dsv/deposit/edit" style="display: flex; flex-direction: column; gap: 12px;">
+            <form method="POST" action="<?= $urlFor('deposit.edit'); ?>" style="display: flex; flex-direction: column; gap: 12px;">
                 <input type="hidden" name="deposit_index" id="edit_dep_index">
                 <input type="hidden" name="deposit_id" id="edit_dep_id">
 
@@ -74,7 +74,7 @@
 
                 <div class="form-section" style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
                     <h5 style="margin-top: 0; margin-bottom: 10px; color: #334155; font-size: 0.85rem;">+ Add Data <?= htmlspecialchars((string)$cardTitle); ?></h5>
-                    <form action="/dsv/deposit" method="POST" class="currency-form">
+                    <form action="<?= $urlFor('deposit.create'); ?>" method="POST" class="currency-form">
                         <input type="hidden" name="deposit_index" value="<?= $d; ?>">
 
                         <div class="form-group" style="margin-bottom: 8px;">
@@ -138,7 +138,7 @@
                                                         Edit
                                                     </a>
 
-                                                    <a href="/dsv/deposit/delete/<?= $d; ?>/<?= $depRow['id']; ?>" class="btn-action-delete"
+                                                    <a href="<?= $urlFor('deposit.delete', ['index' => (string)$d, 'id' => (string)$depRow['id']]); ?>" class="btn-action-delete"
                                                         onclick="return confirm('Are you sure you want to delete tenor data <?= htmlspecialchars((string)$depRow['tenor']); ?>?');">
                                                         Delete
                                                     </a>

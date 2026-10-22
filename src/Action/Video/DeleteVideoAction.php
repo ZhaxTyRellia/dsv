@@ -9,6 +9,7 @@ use App\Domain\Video\VideoRepository;
 use App\Support\FlashMessage;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Slim\Interfaces\RouteParserInterface;
 use Slim\Views\PhpRenderer;
 
 class DeleteVideoAction extends ActionBase
@@ -19,10 +20,11 @@ class DeleteVideoAction extends ActionBase
     public function __construct(
         PhpRenderer $renderer,
         FlashMessage $flash,
+        RouteParserInterface $routeParser,
         VideoRepository $videoRepo,
         array $settings
     ) {
-        parent::__construct($renderer, $flash);
+        parent::__construct($renderer, $flash, $routeParser);
         $this->videoRepo = $videoRepo;
         $this->videoDir = $settings['paths']['uploads']['videos'];
     }
@@ -37,14 +39,14 @@ class DeleteVideoAction extends ActionBase
 
         if ($id <= 0) {
             $this->flash->add('warning', 'Video data not found.');
-            return $this->redirect($response, './?tab=5');
+            return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '5']);
         }
 
         $video = $this->videoRepo->getById($id);
 
         if (!$video) {
             $this->flash->add('warning', 'Video data not found.');
-            return $this->redirect($response, './?tab=5');
+            return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '5']);
         }
 
         $fileName = $video['file_name'];
@@ -63,6 +65,6 @@ class DeleteVideoAction extends ActionBase
             $this->flash->add('danger', 'Failed to delete video from database.');
         }
 
-        return $this->redirect($response, './?tab=5');
+        return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '5']);
     }
 }

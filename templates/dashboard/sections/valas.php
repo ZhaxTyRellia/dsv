@@ -3,7 +3,7 @@
     <dialog id="editExchangeModal" style="border: none; border-radius: 12px; padding: 28px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1); width: 450px; max-width: 90%;">
         <h3 style="margin-top: 0; margin-bottom: 20px; color: #1e293b; font-family: sans-serif;">Edit Exchange Rate</h3>
 
-        <form action="/dsv/valas/edit" method="POST" id="editValasForm" style="display: flex; flex-direction: column; gap: 16px; font-family: sans-serif;">
+        <form action="<?= $urlFor('valas.edit'); ?>" method="POST" id="editValasForm" style="display: flex; flex-direction: column; gap: 16px; font-family: sans-serif;">
             <input type="hidden" id="edit_id" name="id">
 
             <div class="form-group">
@@ -77,7 +77,7 @@
         </div>
         <div class="form-section">
             <h3 class="section-title">Add New Currency Rates</h3>
-            <form action="/dsv/valas" method="POST" class="currency-form">
+            <form action="<?= $urlFor('valas.create'); ?>" method="POST" class="currency-form">
                 <div class="form-group fg-code">
                     <label for="currencyCodeAndFlag">Currency &amp; Flag:</label>
                     <select id="currencyCodeAndFlag" name="currency_data" required>
@@ -158,7 +158,7 @@
                                 <tr>
                                     <td>
                                         <?php if (!empty($row_valas['flag_image'])): ?>
-                                            <img src="/dsv/app/img/flags/svg/<?php echo htmlspecialchars((string)$row_valas['flag_image']); ?>.svg"
+                                            <img src="<?= $basePath; ?>/app/img/flags/svg/<?php echo htmlspecialchars((string)$row_valas['flag_image']); ?>.svg"
                                                 alt="<?php echo htmlspecialchars((string)$row_valas['currency_code']); ?> Flag"
                                                 style="width: 30px; height: auto; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); vertical-align: middle;">
                                         <?php else: ?>
@@ -183,7 +183,7 @@
                                                 Edit
                                             </a>
 
-                                            <a href="/dsv/valas/delete/<?php echo $row_valas['id']; ?>" class="btn-action-delete"
+                                            <a href="<?= $urlFor('valas.delete', ['id' => (string)$row_valas['id']]); ?>" class="btn-action-delete"
                                                 onclick="return confirm('Are you sure you want to delete the exchange rate for <?php echo htmlspecialchars((string)$row_valas['currency_code']); ?>?');">
                                                 Delete
                                             </a>

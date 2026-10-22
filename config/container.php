@@ -13,6 +13,7 @@ use App\Support\FlashMessage;
 use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Slim\Interfaces\RouteParserInterface;
 use Slim\Psr7\Factory\ResponseFactory;
 use Slim\Views\PhpRenderer;
 
@@ -81,6 +82,7 @@ $containerBuilder->addDefinitions([
         return new App\Action\Dashboard\UpdateIdentityAction(
             $c->get(PhpRenderer::class),
             $c->get(FlashMessage::class),
+            $c->get(RouteParserInterface::class),
             $c->get(IdentityRepository::class),
             $c->get(FileUploader::class),
             $c->get('settings')
@@ -91,6 +93,7 @@ $containerBuilder->addDefinitions([
         return new App\Action\Video\UploadVideoAction(
             $c->get(PhpRenderer::class),
             $c->get(FlashMessage::class),
+            $c->get(RouteParserInterface::class),
             $c->get(VideoRepository::class),
             $c->get(FileUploader::class),
             $c->get('settings')
@@ -101,6 +104,7 @@ $containerBuilder->addDefinitions([
         return new App\Action\Video\DeleteVideoAction(
             $c->get(PhpRenderer::class),
             $c->get(FlashMessage::class),
+            $c->get(RouteParserInterface::class),
             $c->get(VideoRepository::class),
             $c->get('settings')
         );

@@ -6,8 +6,8 @@
     <title>Display Signage</title>
     <meta name="description" content="Display Signage Valas screen">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" type="image/png" href="/dsv/app/img/favicon.png">
-    <link id="theme-stylesheet" rel="stylesheet" type="text/css" href="/dsv/app/css/<?= htmlspecialchars((string)$activeTheme); ?>">
+    <link rel="shortcut icon" type="image/png" href="<?= $basePath; ?>/app/img/favicon.png">
+    <link id="theme-stylesheet" rel="stylesheet" type="text/css" href="<?= $basePath; ?>/app/css/<?= htmlspecialchars((string)$activeTheme); ?>">
 </head>
 
 <body>
@@ -83,7 +83,7 @@
             <div class="header-identity">
                 <div id="logo-container">
                     <?php if (!empty($logoUrl)): ?>
-                        <img id="header-logo-img" src="/dsv/app/img/logo/<?php echo htmlspecialchars((string)$logoUrl); ?>" alt="Logo" class="header-logo">
+                        <img id="header-logo-img" src="<?= $basePath; ?>/app/img/logo/<?php echo htmlspecialchars((string)$logoUrl); ?>" alt="Logo" class="header-logo">
                     <?php endif; ?>
                 </div>
                 <div class="header-text">
@@ -155,7 +155,7 @@
                                 <tr>
                                     <td>
                                         <?php if (!empty($kurs['flag_image'])): ?>
-                                            <img src="/dsv/app/img/flags/svg/<?php echo htmlspecialchars((string)$kurs['flag_image']); ?>.svg" alt="Flag" class="flag-img">
+                                            <img src="<?= $basePath; ?>/app/img/flags/svg/<?php echo htmlspecialchars((string)$kurs['flag_image']); ?>.svg" alt="Flag" class="flag-img">
                                         <?php endif; ?>
                                         <span class="currency-code"><?php echo htmlspecialchars((string)($kurs['currency_code'] ?? '')); ?></span>
                                         <span class="currency-full-name">| <?php echo htmlspecialchars((string)($kurs['currency_name'] ?? '')); ?></span>
@@ -189,10 +189,10 @@
         </div>
     </div>
 
-    <script src="/dsv/app/js/show_clock.js"></script>
-    <script src="/dsv/app/js/show_identity.js"></script>
-    <script src="/dsv/app/js/auto_scroll_table.js"></script>
-    <script src="/dsv/app/js/themes_automatic.js"></script>
+    <script src="<?= $basePath; ?>/app/js/show_clock.js"></script>
+    <script src="<?= $basePath; ?>/app/js/show_identity.js"></script>
+    <script src="<?= $basePath; ?>/app/js/auto_scroll_table.js"></script>
+    <script src="<?= $basePath; ?>/app/js/themes_automatic.js"></script>
 </body>
 
 </html>

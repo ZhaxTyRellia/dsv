@@ -45,7 +45,7 @@ return function (App $app) {
         }
 
         return $app->getContainer()->get(DashboardAction::class)($request, $response);
-    });
+    })->setName('dashboard');
 
     // Handle legacy form submissions directly posted to /
     $app->post('/', function (ServerRequestInterface $request, ResponseInterface $response) use ($app) {
@@ -82,51 +82,51 @@ return function (App $app) {
         return $app->getContainer()->get(DashboardAction::class)($request, $response);
     });
 
-    $app->get('/dashboard', DashboardAction::class);
+    $app->get('/dashboard', DashboardAction::class)->setName('dashboard.alias');
     $app->get('/index.php', function (ServerRequestInterface $request, ResponseInterface $response) {
         return $response->withHeader('Location', './')->withStatus(302);
     });
 
-    // 2. Titles
-    $app->post('/titles', UpdateTitlesAction::class);
+    // 2. Titles Management
+    $app->post('/titles', UpdateTitlesAction::class)->setName('titles.update');
 
     // 3. Valas Management
-    $app->post('/valas', CreateValasAction::class);
-    $app->post('/valas/edit', UpdateValasAction::class);
+    $app->post('/valas', CreateValasAction::class)->setName('valas.create');
+    $app->post('/valas/edit', UpdateValasAction::class)->setName('valas.edit');
     $app->get('/valas/edit', UpdateValasAction::class);
-    $app->get('/valas/delete/{id}', DeleteValasAction::class);
+    $app->get('/valas/delete/{id}', DeleteValasAction::class)->setName('valas.delete');
     $app->post('/valas/{id}/delete', DeleteValasAction::class);
 
     // 4. Deposit Management
-    $app->post('/deposit', CreateDepositAction::class);
-    $app->post('/deposit/edit', UpdateDepositAction::class);
-    $app->get('/deposit/delete/{index}/{id}', DeleteDepositAction::class);
+    $app->post('/deposit', CreateDepositAction::class)->setName('deposit.create');
+    $app->post('/deposit/edit', UpdateDepositAction::class)->setName('deposit.edit');
+    $app->get('/deposit/delete/{index}/{id}', DeleteDepositAction::class)->setName('deposit.delete');
     $app->post('/deposit/{index}/{id}/delete', DeleteDepositAction::class);
 
     // 5. Themes Management
-    $app->post('/themes', UpdateThemeAction::class);
+    $app->post('/themes', UpdateThemeAction::class)->setName('themes.update');
 
     // 6. Video Management
-    $app->post('/videos', UploadVideoAction::class);
-    $app->get('/videos/delete/{id}', DeleteVideoAction::class);
+    $app->post('/videos', UploadVideoAction::class)->setName('videos.upload');
+    $app->get('/videos/delete/{id}', DeleteVideoAction::class)->setName('videos.delete');
     $app->post('/videos/{id}/delete', DeleteVideoAction::class);
 
     // 7. Identity & Option Settings
-    $app->post('/identity', UpdateIdentityAction::class);
-    $app->post('/option', SetOptionAction::class);
+    $app->post('/identity', UpdateIdentityAction::class)->setName('identity.update');
+    $app->post('/option', SetOptionAction::class)->setName('option.update');
 
     // 8. Signage Display Screen
-    $app->get('/show', ShowSignageAction::class);
+    $app->get('/show', ShowSignageAction::class)->setName('signage.show');
     $app->get('/show.php', ShowSignageAction::class);
 
     // 9. License Activation
-    $app->get('/license', LicenseAction::class);
-    $app->post('/license/activate', ActivateLicenseAction::class);
+    $app->get('/license', LicenseAction::class)->setName('license.view');
+    $app->post('/license/activate', ActivateLicenseAction::class)->setName('license.activate');
 
     // 10. REST / AJAX APIs
-    $app->get('/api/identity', GetIdentityApiAction::class);
+    $app->get('/api/identity', GetIdentityApiAction::class)->setName('api.identity');
     $app->get('/app/control/get_identity.php', GetIdentityApiAction::class);
 
-    $app->get('/api/themes', GetThemeApiAction::class);
+    $app->get('/api/themes', GetThemeApiAction::class)->setName('api.themes');
     $app->get('/app/control/get_themes.php', GetThemeApiAction::class);
 };

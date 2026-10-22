@@ -5,7 +5,7 @@
             <h5>Settings</h5>
         </div>
         <div class="custom-card-body">
-            <form method="post" action="/dsv/identity" enctype="multipart/form-data">
+            <form method="post" action="<?= $urlFor('identity.update'); ?>" enctype="multipart/form-data">
                 <div class="identity-row">
                     <div class="identity-col-left">
                         <h6 class="identity-section-title">Identity Logo</h6>
@@ -17,7 +17,7 @@
                                 <?php $logoPath = $identity['logo'] ?? ''; ?>
                                 <?php if (!empty($logoPath)): ?>
                                     <div class="identity-image-container">
-                                        <img id="logo-preview" src="/dsv/app/img/logo/<?php echo htmlspecialchars($logoPath); ?>" alt="Logo" class="identity-logo-preview">
+                                        <img id="logo-preview" src="<?= $basePath; ?>/app/img/logo/<?php echo htmlspecialchars($logoPath); ?>" alt="Logo" class="identity-logo-preview">
                                     </div>
                                     <label class="identity-remove-label">
                                         <input type="checkbox" name="remove_logo" value="1" class="identity-checkbox-align">
@@ -62,7 +62,7 @@
 
             <hr class="identity-divider" style="margin: 30px 0; border: 0; border-top: 2px dashed #e2e8f0;">
 
-            <form action="/dsv/option" method="POST" class="inner-modal-form">
+            <form action="<?= $urlFor('option.update'); ?>" method="POST" class="inner-modal-form">
                 <div class="identity-row">
                     <div class="identity-col-left">
                         <h6 class="identity-section-title">Display Layout Option</h6>

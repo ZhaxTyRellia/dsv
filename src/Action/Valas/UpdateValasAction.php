@@ -9,21 +9,25 @@ use App\Domain\Valas\ValasRepository;
 use App\Support\FlashMessage;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Slim\Interfaces\RouteParserInterface;
 use Slim\Views\PhpRenderer;
 
 class UpdateValasAction extends ActionBase
 {
     private ValasRepository $valasRepo;
 
-    public function __construct(PhpRenderer $renderer, FlashMessage $flash, ValasRepository $valasRepo)
-    {
-        parent::__construct($renderer, $flash);
+    public function __construct(
+        PhpRenderer $renderer,
+        FlashMessage $flash,
+        RouteParserInterface $routeParser,
+        ValasRepository $valasRepo
+    ) {
+        parent::__construct($renderer, $flash, $routeParser);
         $this->valasRepo = $valasRepo;
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        // Support both POST body and GET query params for full compatibility
         $params = array_merge(
             (array)($request->getQueryParams() ?? []),
             (array)($request->getParsedBody() ?? [])
@@ -44,7 +48,7 @@ class UpdateValasAction extends ActionBase
 
         if ($id <= 0 || empty($currencyCode)) {
             $this->flash->add('warning', 'Invalid exchange rate data.');
-            return $this->redirect($response, './?tab=2');
+            return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '2']);
         }
 
         $success = $this->valasRepo->update($id, $currencyCode, $currencyName, $flagImage, $buyRate, $sellRate);
@@ -55,6 +59,6 @@ class UpdateValasAction extends ActionBase
             $this->flash->add('danger', 'Failed to update exchange rate data.');
         }
 
-        return $this->redirect($response, './?tab=2');
+        return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '2']);
     }
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use Dotenv\Dotenv;
 use Slim\Factory\AppFactory;
+use Slim\Interfaces\RouteParserInterface;
+use Slim\Views\PhpRenderer;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -26,6 +28,17 @@ $settings = $container->get('settings');
 if (!empty($settings['app']['base_path'])) {
     $app->setBasePath($settings['app']['base_path']);
 }
+
+// Register RouteParser in container
+$routeParser = $app->getRouteCollector()->getRouteParser();
+$container->set(RouteParserInterface::class, $routeParser);
+
+// Inject global template attributes in PhpRenderer
+$renderer = $container->get(PhpRenderer::class);
+$renderer->addAttribute('urlFor', function (string $name, array $data = [], array $queryParams = []) use ($routeParser): string {
+    return $routeParser->urlFor($name, $data, $queryParams);
+});
+$renderer->addAttribute('basePath', $app->getBasePath());
 
 // Register Middleware
 (require __DIR__ . '/middleware.php')($app);

@@ -12,6 +12,7 @@ use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
+use Slim\Interfaces\RouteParserInterface;
 use Slim\Views\PhpRenderer;
 
 class UpdateIdentityAction extends ActionBase
@@ -23,11 +24,12 @@ class UpdateIdentityAction extends ActionBase
     public function __construct(
         PhpRenderer $renderer,
         FlashMessage $flash,
+        RouteParserInterface $routeParser,
         IdentityRepository $identityRepo,
         FileUploader $uploader,
         array $settings
     ) {
-        parent::__construct($renderer, $flash);
+        parent::__construct($renderer, $flash, $routeParser);
         $this->identityRepo = $identityRepo;
         $this->uploader = $uploader;
         $this->logoDir = $settings['paths']['uploads']['logo'];
@@ -70,7 +72,7 @@ class UpdateIdentityAction extends ActionBase
                 }
             } catch (Exception $e) {
                 $this->flash->add('danger', $e->getMessage());
-                return $this->redirect($response, './?tab=6');
+                return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '6']);
             }
         }
 
@@ -82,6 +84,6 @@ class UpdateIdentityAction extends ActionBase
             $this->flash->add('danger', 'Failed to update identity data.');
         }
 
-        return $this->redirect($response, './?tab=6');
+        return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '6']);
     }
 }

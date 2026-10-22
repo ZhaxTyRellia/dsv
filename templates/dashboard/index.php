@@ -6,17 +6,17 @@
     <title>Dashboard - Display Signage Valas</title>
     <meta name="description" content="Display Signage Valas Dashboard powered by Slim Framework v4">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" type="image/png" href="/dsv/app/img/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="<?= $basePath; ?>/app/img/favicon.png">
 
-    <link rel="stylesheet" type="text/css" href="/dsv/app/css/dashboard.css">
-    <link rel="stylesheet" type="text/css" href="/dsv/app/css/section1.css">
-    <link rel="stylesheet" type="text/css" href="/dsv/app/css/section2.css">
-    <link rel="stylesheet" type="text/css" href="/dsv/app/css/section3.css">
-    <link rel="stylesheet" type="text/css" href="/dsv/app/css/section4.css">
-    <link rel="stylesheet" type="text/css" href="/dsv/app/css/section5.css">
-    <link rel="stylesheet" type="text/css" href="/dsv/app/css/section6.css">
+    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/app/css/dashboard.css">
+    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/app/css/section1.css">
+    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/app/css/section2.css">
+    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/app/css/section3.css">
+    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/app/css/section4.css">
+    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/app/css/section5.css">
+    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/app/css/section6.css">
 
-    <script src="/dsv/app/js/toast.js"></script>
+    <script src="<?= $basePath; ?>/app/js/toast.js"></script>
 </head>
 
 <body>
@@ -125,7 +125,7 @@
             <button id="theme-toggle-btn" class="icon-btn-sidebar" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
                 🌙 Dark
             </button>
-            <a href="/dsv/show" class="valas-link-sidebar" title="Show Valas View">&#x26F6; Show Valas</a>
+            <a href="<?= $urlFor('signage.show'); ?>" class="valas-link-sidebar" title="Show Valas View">&#x26F6; Show Valas</a>
         </div>
 
         <!-- Display Current Option Badge -->
@@ -190,13 +190,13 @@
         </script>
     <?php endif; ?>
 
-    <script src="/dsv/app/js/sidebar.js"></script>
-    <script src="/dsv/app/js/clock.js"></script>
-    <script src="/dsv/app/js/scrolling.js"></script>
-    <script src="/dsv/app/js/preview.js"></script>
-    <script src="/dsv/app/js/darkmode.js"></script>
-    <script src="/dsv/app/js/videos.js"></script>
-    <script src="/dsv/app/js/themes.js"></script>
+    <script src="<?= $basePath; ?>/app/js/sidebar.js"></script>
+    <script src="<?= $basePath; ?>/app/js/clock.js"></script>
+    <script src="<?= $basePath; ?>/app/js/scrolling.js"></script>
+    <script src="<?= $basePath; ?>/app/js/preview.js"></script>
+    <script src="<?= $basePath; ?>/app/js/darkmode.js"></script>
+    <script src="<?= $basePath; ?>/app/js/videos.js"></script>
+    <script src="<?= $basePath; ?>/app/js/themes.js"></script>
 
     <?php if ($activeTab > 1): ?>
         <script>

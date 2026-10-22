@@ -5,7 +5,7 @@
             <h5>Theme &amp; Template Settings</h5>
         </div>
         <div class="custom-card-body">
-            <form method="post" action="/dsv/themes">
+            <form method="post" action="<?= $urlFor('themes.update'); ?>">
                 <div class="identity-row theme-setting-row">
 
                     <!-- Left Column: Radio Options -->
@@ -77,7 +77,7 @@
                         <div class="theme-preview-container">
                             <iframe id="themePreviewFrame"
                                 class="theme-preview-iframe"
-                                src="/dsv/show?preview_theme=<?= htmlspecialchars((string)$currentTheme); ?>">
+                                src="<?= $urlFor('signage.show'); ?>?preview_theme=<?= htmlspecialchars((string)$currentTheme); ?>">
                             </iframe>
                         </div>
                     </div>

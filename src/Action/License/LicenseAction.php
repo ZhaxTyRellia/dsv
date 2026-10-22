@@ -9,15 +9,20 @@ use App\Domain\License\LicenseService;
 use App\Support\FlashMessage;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Slim\Interfaces\RouteParserInterface;
 use Slim\Views\PhpRenderer;
 
 class LicenseAction extends ActionBase
 {
     private LicenseService $licenseService;
 
-    public function __construct(PhpRenderer $renderer, FlashMessage $flash, LicenseService $licenseService)
-    {
-        parent::__construct($renderer, $flash);
+    public function __construct(
+        PhpRenderer $renderer,
+        FlashMessage $flash,
+        RouteParserInterface $routeParser,
+        LicenseService $licenseService
+    ) {
+        parent::__construct($renderer, $flash, $routeParser);
         $this->licenseService = $licenseService;
     }
 

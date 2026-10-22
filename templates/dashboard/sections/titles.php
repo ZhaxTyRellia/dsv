@@ -1,7 +1,7 @@
 <!-- Valas Form View (Update Titles) -->
 <section id="menu-section-1" class="menu-section <?= ($activeTab === 1) ? 'active' : ''; ?>">
     <div class="valas-header-container" style="display: flex; flex-direction: column; gap: 20px;">
-        <form method="post" action="/dsv/titles" class="valas-header-form">
+        <form method="post" action="<?= $urlFor('titles.update'); ?>" class="valas-header-form">
             <div class="valas-header-card" style="border-left: 4px solid #2563eb; background: #ffffff;">
                 <div class="valas-header-card-top" style="background: #eff6ff; padding: 12px 16px; border-bottom: 1px solid #dbeafe;">
                     <h5 style="margin: 0; color: #1e40af; font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 8px;">

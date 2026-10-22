@@ -12,6 +12,7 @@ use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
+use Slim\Interfaces\RouteParserInterface;
 use Slim\Views\PhpRenderer;
 
 class UploadVideoAction extends ActionBase
@@ -23,11 +24,12 @@ class UploadVideoAction extends ActionBase
     public function __construct(
         PhpRenderer $renderer,
         FlashMessage $flash,
+        RouteParserInterface $routeParser,
         VideoRepository $videoRepo,
         FileUploader $uploader,
         array $settings
     ) {
-        parent::__construct($renderer, $flash);
+        parent::__construct($renderer, $flash, $routeParser);
         $this->videoRepo = $videoRepo;
         $this->uploader = $uploader;
         $this->videoDir = $settings['paths']['uploads']['videos'];
@@ -43,7 +45,7 @@ class UploadVideoAction extends ActionBase
             $files['video_file']->getError() !== UPLOAD_ERR_OK
         ) {
             $this->flash->add('warning', 'Please choose a valid video file to upload.');
-            return $this->redirect($response, './?tab=5');
+            return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '5']);
         }
 
         try {
@@ -62,6 +64,6 @@ class UploadVideoAction extends ActionBase
             $this->flash->add('danger', $e->getMessage());
         }
 
-        return $this->redirect($response, './?tab=5');
+        return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '5']);
     }
 }

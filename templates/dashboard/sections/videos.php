@@ -6,7 +6,7 @@
         </div>
         <div class="form-section">
             <h3 class="section-title">Upload New Signage Video</h3>
-            <form action="/dsv/videos" method="POST" enctype="multipart/form-data" class="currency-form">
+            <form action="<?= $urlFor('videos.upload'); ?>" method="POST" enctype="multipart/form-data" class="currency-form">
 
                 <div class="form-group" style="width: 100%; display: flex; flex-direction: column;">
                     <label for="videoFile" style="font-weight: 500; font-size: 13px; color: #475569; margin-bottom: 6px;">Choose Video File:</label>
@@ -40,7 +40,7 @@
                                     <td>
                                         <div style="display: flex; align-items: center; gap: 15px;">
                                             <video width="120" preload="metadata" class="preview-video-trigger" style="border-radius: 6px; background: #000; box-shadow: 0 1px 3px rgba(0,0,0,0.2); cursor: pointer;" title="Klik untuk putar/jeda dengan suara">
-                                                <source src="/dsv/app/videos/<?php echo htmlspecialchars((string)$row_video['file_name']); ?>" type="video/mp4">
+                                                <source src="<?= $basePath; ?>/app/videos/<?php echo htmlspecialchars((string)$row_video['file_name']); ?>" type="video/mp4">
                                             </video>
                                             <span style="font-family: monospace; font-weight: bold; color: #334155;">
                                                 <?php echo htmlspecialchars((string)$row_video['file_name']); ?>
@@ -52,7 +52,7 @@
                                     </td>
                                     <td style="text-align: center;">
                                         <div class="action-buttons" style="justify-content: center;">
-                                            <a href="/dsv/videos/delete/<?php echo $row_video['id']; ?>" class="btn-action-delete"
+                                            <a href="<?= $urlFor('videos.delete', ['id' => (string)$row_video['id']]); ?>" class="btn-action-delete"
                                                 onclick="return confirm('Are you sure you want to delete the video <?php echo htmlspecialchars((string)$row_video['file_name']); ?>? This action cannot be undone.');">
                                                 Delete
                                             </a>

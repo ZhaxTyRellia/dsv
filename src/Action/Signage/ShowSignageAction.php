@@ -12,6 +12,7 @@ use App\Domain\Video\VideoRepository;
 use App\Support\FlashMessage;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Slim\Interfaces\RouteParserInterface;
 use Slim\Views\PhpRenderer;
 
 class ShowSignageAction extends ActionBase
@@ -24,12 +25,13 @@ class ShowSignageAction extends ActionBase
     public function __construct(
         PhpRenderer $renderer,
         FlashMessage $flash,
+        RouteParserInterface $routeParser,
         IdentityRepository $identityRepo,
         TitleRepository $titleRepo,
         ValasRepository $valasRepo,
         VideoRepository $videoRepo
     ) {
-        parent::__construct($renderer, $flash);
+        parent::__construct($renderer, $flash, $routeParser);
         $this->identityRepo = $identityRepo;
         $this->titleRepo = $titleRepo;
         $this->valasRepo = $valasRepo;

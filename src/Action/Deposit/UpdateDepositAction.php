@@ -9,15 +9,20 @@ use App\Domain\Deposit\DepositRepository;
 use App\Support\FlashMessage;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Slim\Interfaces\RouteParserInterface;
 use Slim\Views\PhpRenderer;
 
 class UpdateDepositAction extends ActionBase
 {
     private DepositRepository $depositRepo;
 
-    public function __construct(PhpRenderer $renderer, FlashMessage $flash, DepositRepository $depositRepo)
-    {
-        parent::__construct($renderer, $flash);
+    public function __construct(
+        PhpRenderer $renderer,
+        FlashMessage $flash,
+        RouteParserInterface $routeParser,
+        DepositRepository $depositRepo
+    ) {
+        parent::__construct($renderer, $flash, $routeParser);
         $this->depositRepo = $depositRepo;
     }
 
@@ -38,7 +43,7 @@ class UpdateDepositAction extends ActionBase
 
         if ($id <= 0 || empty($tenor)) {
             $this->flash->add('warning', 'Invalid deposit data.');
-            return $this->redirect($response, './?tab=3');
+            return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '3']);
         }
 
         $success = $this->depositRepo->update($depIndex, $id, $tenor, $interestRate, $minAmount, $description);
@@ -49,6 +54,6 @@ class UpdateDepositAction extends ActionBase
             $this->flash->add('danger', 'Gagal memperbarui data Deposito.');
         }
 
-        return $this->redirect($response, './?tab=3');
+        return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '3']);
     }
 }

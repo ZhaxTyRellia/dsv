@@ -9,15 +9,20 @@ use App\Domain\Title\TitleRepository;
 use App\Support\FlashMessage;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Slim\Interfaces\RouteParserInterface;
 use Slim\Views\PhpRenderer;
 
 class UpdateTitlesAction extends ActionBase
 {
     private TitleRepository $titleRepo;
 
-    public function __construct(PhpRenderer $renderer, FlashMessage $flash, TitleRepository $titleRepo)
-    {
-        parent::__construct($renderer, $flash);
+    public function __construct(
+        PhpRenderer $renderer,
+        FlashMessage $flash,
+        RouteParserInterface $routeParser,
+        TitleRepository $titleRepo
+    ) {
+        parent::__construct($renderer, $flash, $routeParser);
         $this->titleRepo = $titleRepo;
     }
 
@@ -33,6 +38,6 @@ class UpdateTitlesAction extends ActionBase
             $this->flash->add('danger', 'Failed to update section titles.');
         }
 
-        return $this->redirect($response, './?tab=1');
+        return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '1']);
     }
 }

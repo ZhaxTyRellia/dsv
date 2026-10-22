@@ -9,15 +9,20 @@ use App\Domain\Identity\IdentityRepository;
 use App\Support\FlashMessage;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Slim\Interfaces\RouteParserInterface;
 use Slim\Views\PhpRenderer;
 
 class SetOptionAction extends ActionBase
 {
     private IdentityRepository $identityRepo;
 
-    public function __construct(PhpRenderer $renderer, FlashMessage $flash, IdentityRepository $identityRepo)
-    {
-        parent::__construct($renderer, $flash);
+    public function __construct(
+        PhpRenderer $renderer,
+        FlashMessage $flash,
+        RouteParserInterface $routeParser,
+        IdentityRepository $identityRepo
+    ) {
+        parent::__construct($renderer, $flash, $routeParser);
         $this->identityRepo = $identityRepo;
     }
 
@@ -37,6 +42,6 @@ class SetOptionAction extends ActionBase
             $this->flash->add('warning', 'Invalid option selected.');
         }
 
-        return $this->redirect($response, './?tab=6');
+        return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '6']);
     }
 }
