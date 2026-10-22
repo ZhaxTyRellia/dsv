@@ -6,7 +6,7 @@
     <title>Verification License</title>
     <meta name="description" content="Display Signage Valas License Verification">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" type="image/png" href="<?= $basePath; ?>/app/img/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="<?= $basePath; ?>/img/favicon.png">
     <style>
         body {
             margin: 0;
@@ -16,7 +16,7 @@
             align-items: center;
             min-height: 100vh;
             background-color: #f4f6f9;
-            background-image: url("<?= $basePath; ?>/app/img/login.png");
+            background-image: url("<?= $basePath; ?>/img/login.png");
             background-repeat: no-repeat;
             background-position: center center;
             background-size: cover;

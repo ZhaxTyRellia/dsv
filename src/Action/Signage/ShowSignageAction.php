@@ -55,7 +55,7 @@ class ShowSignageAction extends ActionBase
         $playlist = [];
         foreach ($videos as $video) {
             if (!empty($video['file_name'])) {
-                $playlist[] = '/dsv/app/videos/' . htmlspecialchars((string)$video['file_name']);
+                $playlist[] = '/dsv/videos/' . htmlspecialchars((string)$video['file_name']);
             }
         }
 

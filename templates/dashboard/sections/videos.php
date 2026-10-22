@@ -40,7 +40,7 @@
                                     <td>
                                         <div style="display: flex; align-items: center; gap: 15px;">
                                             <video width="120" preload="metadata" class="preview-video-trigger" style="border-radius: 6px; background: #000; box-shadow: 0 1px 3px rgba(0,0,0,0.2); cursor: pointer;" title="Klik untuk putar/jeda dengan suara">
-                                                <source src="<?= $basePath; ?>/app/videos/<?php echo htmlspecialchars((string)$row_video['file_name']); ?>" type="video/mp4">
+                                                <source src="<?= $basePath; ?>/videos/<?php echo htmlspecialchars((string)$row_video['file_name']); ?>" type="video/mp4">
                                             </video>
                                             <span style="font-family: monospace; font-weight: bold; color: #334155;">
                                                 <?php echo htmlspecialchars((string)$row_video['file_name']); ?>

@@ -29,8 +29,8 @@ return [
         'public' => dirname(__DIR__) . '/public',
         'templates' => dirname(__DIR__) . '/templates',
         'uploads' => [
-            'logo' => dirname(__DIR__) . '/app/img/logo',
-            'videos' => dirname(__DIR__) . '/app/videos',
+            'logo' => dirname(__DIR__) . '/public/img/logo',
+            'videos' => dirname(__DIR__) . '/public/videos',
         ],
     ],
     'license' => [

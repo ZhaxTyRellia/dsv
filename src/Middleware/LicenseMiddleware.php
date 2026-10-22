@@ -37,6 +37,10 @@ class LicenseMiddleware implements MiddlewareInterface
             str_ends_with($path, '/license') ||
             str_ends_with($path, '/license/activate') ||
             str_contains($path, '/api/') ||
+            str_contains($path, '/css/') ||
+            str_contains($path, '/js/') ||
+            str_contains($path, '/img/') ||
+            str_contains($path, '/videos/') ||
             str_contains($path, '/app/')
         ) {
             return $handler->handle($request);

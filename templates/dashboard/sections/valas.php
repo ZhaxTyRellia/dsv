@@ -158,7 +158,7 @@
                                 <tr>
                                     <td>
                                         <?php if (!empty($row_valas['flag_image'])): ?>
-                                            <img src="<?= $basePath; ?>/app/img/flags/svg/<?php echo htmlspecialchars((string)$row_valas['flag_image']); ?>.svg"
+                                            <img src="<?= $basePath; ?>/img/flags/svg/<?php echo htmlspecialchars((string)$row_valas['flag_image']); ?>.svg"
                                                 alt="<?php echo htmlspecialchars((string)$row_valas['currency_code']); ?> Flag"
                                                 style="width: 30px; height: auto; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); vertical-align: middle;">
                                         <?php else: ?>

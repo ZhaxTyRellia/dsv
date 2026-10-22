@@ -10,7 +10,7 @@ function refreshIdentity() {
 
             const logoContainer = document.getElementById('logo-container');
             if (data.logoUrl) {
-                const fullLogoPath = `/dsv/app/img/logo/${data.logoUrl}`;
+                const fullLogoPath = `/dsv/img/logo/${data.logoUrl}`;
                 let logoImg = document.getElementById('header-logo-img');
 
                 if (!logoImg) {

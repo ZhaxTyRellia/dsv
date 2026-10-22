@@ -6,17 +6,17 @@
     <title>Dashboard - Display Signage Valas</title>
     <meta name="description" content="Display Signage Valas Dashboard powered by Slim Framework v4">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" type="image/png" href="<?= $basePath; ?>/app/img/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="<?= $basePath; ?>/img/favicon.png">
 
-    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/app/css/dashboard.css">
-    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/app/css/section1.css">
-    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/app/css/section2.css">
-    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/app/css/section3.css">
-    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/app/css/section4.css">
-    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/app/css/section5.css">
-    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/app/css/section6.css">
+    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/css/dashboard.css">
+    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/css/section1.css">
+    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/css/section2.css">
+    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/css/section3.css">
+    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/css/section4.css">
+    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/css/section5.css">
+    <link rel="stylesheet" type="text/css" href="<?= $basePath; ?>/css/section6.css">
 
-    <script src="<?= $basePath; ?>/app/js/toast.js"></script>
+    <script src="<?= $basePath; ?>/js/toast.js"></script>
 </head>
 
 <body>
@@ -190,13 +190,13 @@
         </script>
     <?php endif; ?>
 
-    <script src="<?= $basePath; ?>/app/js/sidebar.js"></script>
-    <script src="<?= $basePath; ?>/app/js/clock.js"></script>
-    <script src="<?= $basePath; ?>/app/js/scrolling.js"></script>
-    <script src="<?= $basePath; ?>/app/js/preview.js"></script>
-    <script src="<?= $basePath; ?>/app/js/darkmode.js"></script>
-    <script src="<?= $basePath; ?>/app/js/videos.js"></script>
-    <script src="<?= $basePath; ?>/app/js/themes.js"></script>
+    <script src="<?= $basePath; ?>/js/sidebar.js"></script>
+    <script src="<?= $basePath; ?>/js/clock.js"></script>
+    <script src="<?= $basePath; ?>/js/scrolling.js"></script>
+    <script src="<?= $basePath; ?>/js/preview.js"></script>
+    <script src="<?= $basePath; ?>/js/darkmode.js"></script>
+    <script src="<?= $basePath; ?>/js/videos.js"></script>
+    <script src="<?= $basePath; ?>/js/themes.js"></script>
 
     <?php if ($activeTab > 1): ?>
         <script>

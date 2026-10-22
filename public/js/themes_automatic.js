@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         const themeLink = document.getElementById('theme-stylesheet');
                         if (themeLink) {
-                            themeLink.href = '/dsv/app/css/' + data.theme + '?v=' + new Date().getTime();
+                            themeLink.href = '/dsv/css/' + data.theme + '?v=' + new Date().getTime();
                             console.log("Theme automatically updated to: " + data.theme);
                         }
                     }

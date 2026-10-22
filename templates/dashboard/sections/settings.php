@@ -17,7 +17,7 @@
                                 <?php $logoPath = $identity['logo'] ?? ''; ?>
                                 <?php if (!empty($logoPath)): ?>
                                     <div class="identity-image-container">
-                                        <img id="logo-preview" src="<?= $basePath; ?>/app/img/logo/<?php echo htmlspecialchars($logoPath); ?>" alt="Logo" class="identity-logo-preview">
+                                        <img id="logo-preview" src="<?= $basePath; ?>/img/logo/<?php echo htmlspecialchars($logoPath); ?>" alt="Logo" class="identity-logo-preview">
                                     </div>
                                     <label class="identity-remove-label">
                                         <input type="checkbox" name="remove_logo" value="1" class="identity-checkbox-align">
