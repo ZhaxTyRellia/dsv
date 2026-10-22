@@ -34,7 +34,21 @@ return [
         ],
     ],
     'license' => [
-        'file_path' => $_ENV['LICENSE_FILE_PATH'] ?? 'C:\\127.0.0.1\\license.key',
+        'file_path' => (function () {
+            $configured = $_ENV['LICENSE_FILE_PATH'] ?? null;
+            if (!empty($configured)) {
+                return preg_replace_callback('/%([^%]+)%/', function ($matches) {
+                    return getenv($matches[1]) ?: ($_SERVER[$matches[1]] ?? $matches[0]);
+                }, $configured);
+            }
+
+            $userDir = getenv('USERPROFILE')
+                ?: (getenv('HOMEDRIVE') && getenv('HOMEPATH') ? getenv('HOMEDRIVE') . getenv('HOMEPATH') : null)
+                ?: (getenv('USERNAME') ? 'C:\\Users\\' . getenv('USERNAME') : null)
+                ?: 'C:\\127.0.0.1';
+
+            return rtrim($userDir, '\\/') . DIRECTORY_SEPARATOR . 'dsv' . DIRECTORY_SEPARATOR . 'license.key';
+        })(),
         'secret_salt' => $_ENV['LICENSE_SECRET_SALT'] ?? 'GautavarisKey!!!',
     ],
 ];
