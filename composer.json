@@ -1,0 +1,25 @@
+{
+    "name": "dsv/display-signage-valas",
+    "description": "Display Signage Valas built with Slim Framework v4",
+    "type": "project",
+    "license": "proprietary",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.1",
+        "slim/slim": "^4.14",
+        "slim/psr7": "^1.7",
+        "php-di/php-di": "^7.0",
+        "slim/php-view": "^3.2",
+        "selective/basepath": "^2.1",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "config": {
+        "process-timeout": 0,
+        "sort-packages": true,
+        "allow-plugins": {}
+    }
+}
