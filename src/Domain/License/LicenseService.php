@@ -27,7 +27,6 @@ class LicenseService
 {
     private string $licenseFilePath;
     private string $secretSalt;
-    private string $schemaFilePath;
     private ?string $cachedDeviceId = null;
     private bool $kernelBooted = false;
     private string $runtimeSeal = '';
@@ -35,7 +34,6 @@ class LicenseService
     public function __construct(?string $licenseFilePath = null, ?string $secretSalt = null)
     {
         $this->secretSalt = $secretSalt ?: 'GautavarisKey!!!';
-        $this->schemaFilePath = dirname(__DIR__, 3) . '/config/dsv.sql';
 
         if ($licenseFilePath !== null && $licenseFilePath !== '') {
             $this->licenseFilePath = $licenseFilePath;
@@ -120,7 +118,7 @@ class LicenseService
 
     /**
      * Core Database Factory: Unlocks and creates the PDO connection only when the kernel is authorized.
-     * Automatically imports config/dsv.sql if the database or tables do not exist yet, and skips if already present.
+     * Automatically runs PHP schema migration & initial seed if database/tables do not exist yet, and skips if present.
      */
     public function createDatabaseConnection(array $dbSettings): PDO
     {
@@ -138,15 +136,15 @@ class LicenseService
             $dsn = sprintf('mysql:host=%s;port=%d;dbname=%s;charset=%s', $host, $port, $dbName, $charset);
             $pdo = new PDO($dsn, $username, $password, $flags);
 
-            // Check if core table exists; if empty, auto-import schema, otherwise skip
+            // Check if core table exists; if empty, run PHP migration & seed, otherwise skip
             $check = $pdo->query("SHOW TABLES LIKE 'identity'");
             if ($check === false || $check->fetch() === false) {
-                $this->importSchemaFile($pdo);
+                $this->migrateAndSeedDatabase($pdo, false);
             }
 
             return $pdo;
         } catch (\PDOException $e) {
-            // Error 1049 = Unknown database: create database and auto-import schema
+            // Error 1049 = Unknown database: create database and run PHP migration & seed
             if (
                 (int)$e->getCode() === 1049 ||
                 str_contains($e->getMessage(), '1049') ||
@@ -159,7 +157,7 @@ class LicenseService
                 $pdo->exec("CREATE DATABASE IF NOT EXISTS `{$safeDbName}` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
                 $pdo->exec("USE `{$safeDbName}`");
 
-                $this->importSchemaFile($pdo);
+                $this->migrateAndSeedDatabase($pdo, false);
 
                 return $pdo;
             }
@@ -169,29 +167,120 @@ class LicenseService
     }
 
     /**
-     * Resets the database to factory defaults by re-executing the SQL schema file.
+     * Resets the database to factory defaults via native PHP migration & seeder.
      */
     public function resetDatabaseToFactory(PDO $pdo): bool
     {
         $this->assertKernelAuthorized();
-        return $this->importSchemaFile($pdo);
+        return $this->migrateAndSeedDatabase($pdo, true);
     }
 
     /**
-     * Executes the SQL schema & seed statements from config/dsv.sql.
+     * Native PHP Database Migration & Seeder (Zero external .sql dependency).
      */
-    private function importSchemaFile(PDO $pdo): bool
+    private function migrateAndSeedDatabase(PDO $pdo, bool $truncateAll = false): bool
     {
-        if (!file_exists($this->schemaFilePath)) {
-            throw new RuntimeException("Fatal System Error: Database schema file not found at {$this->schemaFilePath}.");
+        $pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
+
+        // 1. Migrate deposit_1 through deposit_8 tables
+        for ($i = 1; $i <= 8; $i++) {
+            $pdo->exec("
+                CREATE TABLE IF NOT EXISTS `deposit_{$i}` (
+                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                    `tenor` varchar(100) NOT NULL,
+                    `interest_rate` decimal(25,2) NOT NULL DEFAULT 0.00,
+                    `min_amount` decimal(15,2) DEFAULT 0.00,
+                    `description` text DEFAULT NULL,
+                    PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+            ");
+
+            if ($truncateAll) {
+                $pdo->exec("TRUNCATE TABLE `deposit_{$i}`");
+            }
         }
 
-        $sql = file_get_contents($this->schemaFilePath);
-        if ($sql === false || trim($sql) === '') {
-            throw new RuntimeException('Fatal System Error: Database schema file is empty or unreadable.');
+        // 2. Migrate identity table
+        $pdo->exec("
+            CREATE TABLE IF NOT EXISTS `identity` (
+                `id` int(11) NOT NULL AUTO_INCREMENT,
+                `logo` varchar(255) DEFAULT NULL,
+                `title` varchar(255) DEFAULT NULL,
+                `name` varchar(255) DEFAULT NULL,
+                `marquee` text DEFAULT NULL,
+                `options` varchar(10) DEFAULT '1',
+                `themes` varchar(100) DEFAULT 'show-0.css',
+                PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+        ");
+
+        // 3. Migrate titles table
+        $pdo->exec("
+            CREATE TABLE IF NOT EXISTS `titles` (
+                `id_information` int(11) NOT NULL AUTO_INCREMENT,
+                `title_1` varchar(255) DEFAULT NULL,
+                `title_2` varchar(255) DEFAULT NULL,
+                `title_3` varchar(255) DEFAULT NULL,
+                `title_4` varchar(255) DEFAULT NULL,
+                `title_5` varchar(255) DEFAULT NULL,
+                `title_6` varchar(255) DEFAULT NULL,
+                `title_7` varchar(255) DEFAULT NULL,
+                `title_8` varchar(255) DEFAULT NULL,
+                `title_9` varchar(255) DEFAULT NULL,
+                PRIMARY KEY (`id_information`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+        ");
+
+        // 4. Migrate valas table
+        $pdo->exec("
+            CREATE TABLE IF NOT EXISTS `valas` (
+                `id` int(11) NOT NULL AUTO_INCREMENT,
+                `currency_code` varchar(10) NOT NULL,
+                `currency_name` varchar(100) NOT NULL,
+                `flag_image` varchar(50) DEFAULT NULL,
+                `buy_rate` decimal(15,2) DEFAULT 0.00,
+                `sell_rate` decimal(15,2) DEFAULT 0.00,
+                PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+        ");
+
+        // 5. Migrate videos table
+        $pdo->exec("
+            CREATE TABLE IF NOT EXISTS `videos` (
+                `id` int(11) NOT NULL AUTO_INCREMENT,
+                `file_name` varchar(255) NOT NULL,
+                `create_at` datetime DEFAULT current_timestamp(),
+                PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+        ");
+
+        if ($truncateAll) {
+            $pdo->exec('TRUNCATE TABLE `titles`');
+            $pdo->exec('TRUNCATE TABLE `valas`');
+            $pdo->exec('TRUNCATE TABLE `videos`');
+            $pdo->exec('TRUNCATE TABLE `identity`');
         }
 
-        $pdo->exec($sql);
+        // 6. Seed default identity record if table is empty
+        $identityCount = (int)$pdo->query('SELECT COUNT(*) FROM `identity`')->fetchColumn();
+        if ($identityCount === 0) {
+            $stmt = $pdo->prepare('
+                INSERT INTO `identity` (`id`, `logo`, `title`, `name`, `marquee`, `options`, `themes`)
+                VALUES (:id, :logo, :title, :name, :marquee, :options, :themes)
+            ');
+            $stmt->execute([
+                ':id' => 1,
+                ':logo' => 'default.png',
+                ':title' => 'Display Signage',
+                ':name' => 'Sub Title / Unit Name',
+                ':marquee' => 'Selamat Datang di Layanan Informasi Digital',
+                ':options' => '1',
+                ':themes' => 'show-0.css',
+            ]);
+        }
+
+        $pdo->exec('SET FOREIGN_KEY_CHECKS = 1');
+
         return true;
     }
 
