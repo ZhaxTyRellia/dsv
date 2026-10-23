@@ -75,7 +75,7 @@
                             </select>
                         </div>
                         <div class="identity-action-group">
-                            <button type="submit" name="set_identity_option" class="identity-btn-submit" style="margin-top: 15px;">
+                            <button type="submit" name="set_identity_option" class="identity-btn-submit identity-btn-option" style="margin-top: 15px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.25);">
                                 Save Option
                             </button>
                         </div>
@@ -91,7 +91,7 @@
                             </p>
                         </div>
                         <div class="identity-action-group">
-                            <button type="submit" name="reset_database_btn" class="identity-btn-submit" style="margin-top: 5px; background-color: #dc2626;">
+                            <button type="submit" name="reset_database_btn" class="identity-btn-submit identity-btn-danger" style="margin-top: 5px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.25);">
                                 Reset to Factory Default
                             </button>
                         </div>
