@@ -27,6 +27,7 @@ class LicenseService
 {
     private string $licenseFilePath;
     private string $secretSalt;
+    private string $schemaFilePath;
     private ?string $cachedDeviceId = null;
     private bool $kernelBooted = false;
     private string $runtimeSeal = '';
@@ -34,6 +35,7 @@ class LicenseService
     public function __construct(?string $licenseFilePath = null, ?string $secretSalt = null)
     {
         $this->secretSalt = $secretSalt ?: 'GautavarisKey!!!';
+        $this->schemaFilePath = dirname(__DIR__, 3) . '/config/dsv.sql';
 
         if ($licenseFilePath !== null && $licenseFilePath !== '') {
             $this->licenseFilePath = $licenseFilePath;
@@ -118,25 +120,79 @@ class LicenseService
 
     /**
      * Core Database Factory: Unlocks and creates the PDO connection only when the kernel is authorized.
+     * Automatically imports config/dsv.sql if the database or tables do not exist yet, and skips if already present.
      */
     public function createDatabaseConnection(array $dbSettings): PDO
     {
         $this->assertKernelAuthorized();
 
-        $dsn = sprintf(
-            'mysql:host=%s;port=%d;dbname=%s;charset=%s',
-            $dbSettings['host'],
-            $dbSettings['port'],
-            $dbSettings['database'],
-            $dbSettings['charset']
-        );
+        $host = $dbSettings['host'];
+        $port = (int)$dbSettings['port'];
+        $dbName = $dbSettings['database'];
+        $charset = $dbSettings['charset'];
+        $username = $dbSettings['username'];
+        $password = $dbSettings['password'];
+        $flags = $dbSettings['flags'];
 
-        return new PDO(
-            $dsn,
-            $dbSettings['username'],
-            $dbSettings['password'],
-            $dbSettings['flags']
-        );
+        try {
+            $dsn = sprintf('mysql:host=%s;port=%d;dbname=%s;charset=%s', $host, $port, $dbName, $charset);
+            $pdo = new PDO($dsn, $username, $password, $flags);
+
+            // Check if core table exists; if empty, auto-import schema, otherwise skip
+            $check = $pdo->query("SHOW TABLES LIKE 'identity'");
+            if ($check === false || $check->fetch() === false) {
+                $this->importSchemaFile($pdo);
+            }
+
+            return $pdo;
+        } catch (\PDOException $e) {
+            // Error 1049 = Unknown database: create database and auto-import schema
+            if (
+                (int)$e->getCode() === 1049 ||
+                str_contains($e->getMessage(), '1049') ||
+                str_contains($e->getMessage(), 'Unknown database')
+            ) {
+                $serverDsn = sprintf('mysql:host=%s;port=%d;charset=%s', $host, $port, $charset);
+                $pdo = new PDO($serverDsn, $username, $password, $flags);
+
+                $safeDbName = str_replace('`', '``', $dbName);
+                $pdo->exec("CREATE DATABASE IF NOT EXISTS `{$safeDbName}` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
+                $pdo->exec("USE `{$safeDbName}`");
+
+                $this->importSchemaFile($pdo);
+
+                return $pdo;
+            }
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Resets the database to factory defaults by re-executing the SQL schema file.
+     */
+    public function resetDatabaseToFactory(PDO $pdo): bool
+    {
+        $this->assertKernelAuthorized();
+        return $this->importSchemaFile($pdo);
+    }
+
+    /**
+     * Executes the SQL schema & seed statements from config/dsv.sql.
+     */
+    private function importSchemaFile(PDO $pdo): bool
+    {
+        if (!file_exists($this->schemaFilePath)) {
+            throw new RuntimeException("Fatal System Error: Database schema file not found at {$this->schemaFilePath}.");
+        }
+
+        $sql = file_get_contents($this->schemaFilePath);
+        if ($sql === false || trim($sql) === '') {
+            throw new RuntimeException('Fatal System Error: Database schema file is empty or unreadable.');
+        }
+
+        $pdo->exec($sql);
+        return true;
     }
 
     /**

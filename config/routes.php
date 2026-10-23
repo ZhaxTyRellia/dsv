@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Action\Dashboard\DashboardAction;
+use App\Action\Dashboard\ResetDatabaseAction;
 use App\Action\Dashboard\SetOptionAction;
 use App\Action\Dashboard\UpdateIdentityAction;
 use App\Action\Dashboard\UpdateTitlesAction;
@@ -46,9 +47,10 @@ return function (App $app) {
     $app->post('/videos', UploadVideoAction::class)->setName('videos.upload');
     $app->get('/videos/delete/{id}', DeleteVideoAction::class)->setName('videos.delete');
 
-    // 7. Identity & Option Settings Actions
+    // 7. Identity, Option & Database Settings Actions
     $app->post('/identity', UpdateIdentityAction::class)->setName('identity.update');
     $app->post('/option', SetOptionAction::class)->setName('option.update');
+    $app->post('/database/reset', ResetDatabaseAction::class)->setName('database.reset');
 
     // 8. Signage Display Screen
     $app->get('/show', ShowSignageAction::class)->setName('signage.show');

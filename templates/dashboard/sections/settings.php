@@ -62,9 +62,9 @@
 
             <hr class="identity-divider" style="margin: 30px 0; border: 0; border-top: 2px dashed #e2e8f0;">
 
-            <form action="<?= $urlFor('option.update'); ?>" method="POST" class="inner-modal-form">
-                <div class="identity-row">
-                    <div class="identity-col-left">
+            <div class="identity-row">
+                <div class="identity-col-left">
+                    <form action="<?= $urlFor('option.update'); ?>" method="POST" class="inner-modal-form">
                         <h6 class="identity-section-title">Display Layout Option</h6>
                         <div class="form-group" style="width: 100%; margin-top: 15px;">
                             <label for="identity_option_main" class="inner-modal-label-block" style="margin-bottom: 8px; text-align: left; display: block; font-size: 0.85rem; color: #475569; font-weight: 600;">Select View Option (1-8)</label>
@@ -79,11 +79,25 @@
                                 Save Option
                             </button>
                         </div>
-                    </div>
-                    <div class="identity-col-right">
-                    </div>
+                    </form>
                 </div>
-            </form>
+
+                <div class="identity-col-right">
+                    <form action="<?= $urlFor('database.reset'); ?>" method="POST" onsubmit="return confirm('Are you sure you want to reset the database to factory defaults? All Valas, Deposit, Titles, and Video data will be cleared.');">
+                        <h6 class="identity-section-title">Factory Reset Database</h6>
+                        <div class="form-group" style="width: 100%; margin-top: 15px;">
+                            <p style="font-size: 0.85rem; color: #64748b; margin: 0 0 12px 0; line-height: 1.5;">
+                                Restore all database tables to initial factory state. All currency rates, deposit tables, custom titles, and video playlists will be truncated to 0, while restoring default identity settings.
+                            </p>
+                        </div>
+                        <div class="identity-action-group">
+                            <button type="submit" name="reset_database_btn" class="identity-btn-submit" style="margin-top: 5px; background-color: #dc2626;">
+                                Reset to Factory Default
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </section>

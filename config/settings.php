@@ -28,6 +28,7 @@ return [
         'root' => dirname(__DIR__),
         'public' => dirname(__DIR__) . '/public',
         'templates' => dirname(__DIR__) . '/templates',
+        'schema' => __DIR__ . '/dsv.sql',
         'uploads' => [
             'logo' => dirname(__DIR__) . '/public/img/logo',
             'videos' => dirname(__DIR__) . '/public/videos',
