@@ -27,13 +27,10 @@ CREATE TABLE IF NOT EXISTS `deposit_1` (
   `min_amount` decimal(15,2) DEFAULT 0.00,
   `description` text DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table dsv.deposit_1: ~2 rows (approximately)
-DELETE FROM `deposit_1`;
-INSERT INTO `deposit_1` (`id`, `tenor`, `interest_rate`, `min_amount`, `description`) VALUES
-	(2, 'daada', 4214.00, 2142412.00, 'fdsfsdfsdf g g  g g g g'),
-	(3, '1dsadsad', 111111.00, 11111.00, 'adsadsadsadsada');
+-- Dumping data for table dsv.deposit_1: 0 rows
+TRUNCATE TABLE `deposit_1`;
 
 -- Dumping structure for table dsv.deposit_2
 CREATE TABLE IF NOT EXISTS `deposit_2` (
@@ -45,8 +42,8 @@ CREATE TABLE IF NOT EXISTS `deposit_2` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table dsv.deposit_2: ~0 rows (approximately)
-DELETE FROM `deposit_2`;
+-- Dumping data for table dsv.deposit_2: 0 rows
+TRUNCATE TABLE `deposit_2`;
 
 -- Dumping structure for table dsv.deposit_3
 CREATE TABLE IF NOT EXISTS `deposit_3` (
@@ -58,8 +55,8 @@ CREATE TABLE IF NOT EXISTS `deposit_3` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table dsv.deposit_3: ~0 rows (approximately)
-DELETE FROM `deposit_3`;
+-- Dumping data for table dsv.deposit_3: 0 rows
+TRUNCATE TABLE `deposit_3`;
 
 -- Dumping structure for table dsv.deposit_4
 CREATE TABLE IF NOT EXISTS `deposit_4` (
@@ -71,8 +68,8 @@ CREATE TABLE IF NOT EXISTS `deposit_4` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table dsv.deposit_4: ~0 rows (approximately)
-DELETE FROM `deposit_4`;
+-- Dumping data for table dsv.deposit_4: 0 rows
+TRUNCATE TABLE `deposit_4`;
 
 -- Dumping structure for table dsv.deposit_5
 CREATE TABLE IF NOT EXISTS `deposit_5` (
@@ -84,8 +81,8 @@ CREATE TABLE IF NOT EXISTS `deposit_5` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table dsv.deposit_5: ~0 rows (approximately)
-DELETE FROM `deposit_5`;
+-- Dumping data for table dsv.deposit_5: 0 rows
+TRUNCATE TABLE `deposit_5`;
 
 -- Dumping structure for table dsv.deposit_6
 CREATE TABLE IF NOT EXISTS `deposit_6` (
@@ -97,8 +94,8 @@ CREATE TABLE IF NOT EXISTS `deposit_6` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table dsv.deposit_6: ~0 rows (approximately)
-DELETE FROM `deposit_6`;
+-- Dumping data for table dsv.deposit_6: 0 rows
+TRUNCATE TABLE `deposit_6`;
 
 -- Dumping structure for table dsv.deposit_7
 CREATE TABLE IF NOT EXISTS `deposit_7` (
@@ -110,8 +107,8 @@ CREATE TABLE IF NOT EXISTS `deposit_7` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table dsv.deposit_7: ~0 rows (approximately)
-DELETE FROM `deposit_7`;
+-- Dumping data for table dsv.deposit_7: 0 rows
+TRUNCATE TABLE `deposit_7`;
 
 -- Dumping structure for table dsv.deposit_8
 CREATE TABLE IF NOT EXISTS `deposit_8` (
@@ -123,8 +120,8 @@ CREATE TABLE IF NOT EXISTS `deposit_8` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table dsv.deposit_8: ~0 rows (approximately)
-DELETE FROM `deposit_8`;
+-- Dumping data for table dsv.deposit_8: 0 rows
+TRUNCATE TABLE `deposit_8`;
 
 -- Dumping structure for table dsv.identity
 CREATE TABLE IF NOT EXISTS `identity` (
@@ -138,10 +135,10 @@ CREATE TABLE IF NOT EXISTS `identity` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table dsv.identity: ~0 rows (approximately)
-DELETE FROM `identity`;
+-- Dumping data for table dsv.identity: 1 row
+TRUNCATE TABLE `identity`;
 INSERT INTO `identity` (`id`, `logo`, `title`, `name`, `marquee`, `options`, `themes`) VALUES
-	(1, 'logo_1785403681.png', 'Display Signage', 'Sub Title / Unit Name', 'Selamat Datang di Layanan Informasi Digital', '8', 'show-0.css');
+	(1, 'default.png', 'Display Signage', 'Sub Title / Unit Name', 'Selamat Datang di Layanan Informasi Digital', '1', 'show-0.css');
 
 -- Dumping structure for table dsv.titles
 CREATE TABLE IF NOT EXISTS `titles` (
@@ -156,12 +153,10 @@ CREATE TABLE IF NOT EXISTS `titles` (
   `title_8` varchar(255) DEFAULT NULL,
   `title_9` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id_information`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table dsv.titles: ~0 rows (approximately)
-DELETE FROM `titles`;
-INSERT INTO `titles` (`id_information`, `title_1`, `title_2`, `title_3`, `title_4`, `title_5`, `title_6`, `title_7`, `title_8`, `title_9`) VALUES
-	(1, 'Informasi Kurs Valuta Asing', 'title 1', '', '', '', '', '', '', '');
+-- Dumping data for table dsv.titles: 0 rows
+TRUNCATE TABLE `titles`;
 
 -- Dumping structure for table dsv.valas
 CREATE TABLE IF NOT EXISTS `valas` (
@@ -172,12 +167,10 @@ CREATE TABLE IF NOT EXISTS `valas` (
   `buy_rate` decimal(15,2) DEFAULT 0.00,
   `sell_rate` decimal(15,2) DEFAULT 0.00,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table dsv.valas: ~0 rows (approximately)
-DELETE FROM `valas`;
-INSERT INTO `valas` (`id`, `currency_code`, `currency_name`, `flag_image`, `buy_rate`, `sell_rate`) VALUES
-	(1, 'IDR', 'Rupiah', 'id', 111.00, 111.00);
+-- Dumping data for table dsv.valas: 0 rows
+TRUNCATE TABLE `valas`;
 
 -- Dumping structure for table dsv.videos
 CREATE TABLE IF NOT EXISTS `videos` (
@@ -187,8 +180,8 @@ CREATE TABLE IF NOT EXISTS `videos` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table dsv.videos: ~0 rows (approximately)
-DELETE FROM `videos`;
+-- Dumping data for table dsv.videos: 0 rows
+TRUNCATE TABLE `videos`;
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
