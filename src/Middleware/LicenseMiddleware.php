@@ -32,29 +32,30 @@ class LicenseMiddleware implements MiddlewareInterface
     {
         $path = $request->getUri()->getPath();
 
-        // Allow license activation routes and static/API asset routes
+        // Allow license activation routes and static asset routes
         if (
             str_ends_with($path, '/license') ||
             str_ends_with($path, '/license/activate') ||
-            str_contains($path, '/api/') ||
             str_contains($path, '/css/') ||
             str_contains($path, '/js/') ||
-            str_contains($path, '/img/') ||
-            str_contains($path, '/videos/') ||
-            str_contains($path, '/app/')
+            str_contains($path, '/img/')
         ) {
+            if ($this->licenseService->isLicensed()) {
+                $this->licenseService->authorizeRuntime();
+            }
             return $handler->handle($request);
         }
 
         if ($this->licenseService->isLicensed()) {
+            $this->licenseService->authorizeRuntime();
             return $handler->handle($request);
         }
 
-        // Device is not licensed: render the license activation screen
+        // Device is not licensed: render the license activation screen via Kernel
         $status = $this->licenseService->getStatus();
         $response = $this->responseFactory->createResponse();
 
-        return $this->renderer->render($response, 'license/activate.php', [
+        return $this->licenseService->renderGuarded($this->renderer, $response, 'license/activate.php', [
             'device_id' => $status['device_id'],
             'is_licensed' => false,
             'error_msg' => null,

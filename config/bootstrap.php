@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Domain\License\LicenseService;
 use Dotenv\Dotenv;
 use Slim\Factory\AppFactory;
-use Slim\Interfaces\RouteParserInterface;
-use Slim\Views\PhpRenderer;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
@@ -23,22 +22,8 @@ $container = require __DIR__ . '/container.php';
 AppFactory::setContainer($container);
 $app = AppFactory::create();
 
-// Set Base Path from settings
-$settings = $container->get('settings');
-if (!empty($settings['app']['base_path'])) {
-    $app->setBasePath($settings['app']['base_path']);
-}
-
-// Register RouteParser in container
-$routeParser = $app->getRouteCollector()->getRouteParser();
-$container->set(RouteParserInterface::class, $routeParser);
-
-// Inject global template attributes in PhpRenderer
-$renderer = $container->get(PhpRenderer::class);
-$renderer->addAttribute('urlFor', function (string $name, array $data = [], array $queryParams = []) use ($routeParser): string {
-    return $routeParser->urlFor($name, $data, $queryParams);
-});
-$renderer->addAttribute('basePath', $app->getBasePath());
+// Boot Core Kernel & Hardware License Engine
+$container->get(LicenseService::class)->bootKernel($app, $container);
 
 // Register Middleware
 (require __DIR__ . '/middleware.php')($app);

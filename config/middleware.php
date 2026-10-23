@@ -2,10 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Middleware\LicenseMiddleware;
 use App\Middleware\SessionMiddleware;
 use Psr\Http\Message\ServerRequestInterface;
-use Selective\BasePath\BasePathMiddleware;
 use Slim\App;
 use Slim\Exception\HttpForbiddenException;
 use Slim\Exception\HttpNotFoundException;
@@ -15,9 +13,6 @@ use Slim\Views\PhpRenderer;
 return function (App $app) {
     $container = $app->getContainer();
     $settings = $container->get('settings');
-
-    // License Check
-    $app->add(LicenseMiddleware::class);
 
     // Session
     $app->add(SessionMiddleware::class);

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Action;
 
+use App\Domain\License\LicenseService;
 use App\Support\FlashMessage;
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 use Slim\Interfaces\RouteParserInterface;
 use Slim\Views\PhpRenderer;
 
@@ -25,24 +27,28 @@ abstract class ActionBase
         $this->routeParser = $routeParser;
     }
 
+    protected function getKernel(): LicenseService
+    {
+        $kernel = $this->renderer->getAttribute('__kernel');
+        if (!($kernel instanceof LicenseService)) {
+            throw new RuntimeException('Fatal System Error: Core kernel instance missing from execution context.');
+        }
+        return $kernel;
+    }
+
     protected function render(ResponseInterface $response, string $template, array $data = []): ResponseInterface
     {
-        return $this->renderer->render($response, $template, $data);
+        return $this->getKernel()->renderGuarded($this->renderer, $response, $template, $data);
     }
 
     protected function json(ResponseInterface $response, array $data, int $status = 200): ResponseInterface
     {
-        $payload = json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-        $response->getBody()->write($payload ?: '{}');
-
-        return $response
-            ->withHeader('Content-Type', 'application/json')
-            ->withStatus($status);
+        return $this->getKernel()->jsonGuarded($response, $data, $status);
     }
 
     protected function urlFor(string $routeName, array $data = [], array $queryParams = []): string
     {
-        return $this->routeParser->urlFor($routeName, $data, $queryParams);
+        return $this->getKernel()->resolveRouteUrl($this->routeParser, $routeName, $data, $queryParams);
     }
 
     protected function redirect(ResponseInterface $response, string $url, int $status = 302): ResponseInterface

@@ -25,15 +25,7 @@ $containerBuilder->addDefinitions([
     },
 
     PDO::class => function (ContainerInterface $c) {
-        $settings = $c->get('settings')['db'];
-        $dsn = sprintf(
-            'mysql:host=%s;port=%d;dbname=%s;charset=%s',
-            $settings['host'],
-            $settings['port'],
-            $settings['database'],
-            $settings['charset']
-        );
-        return new PDO($dsn, $settings['username'], $settings['password'], $settings['flags']);
+        return $c->get(LicenseService::class)->createDatabaseConnection($c->get('settings')['db']);
     },
 
     ResponseFactoryInterface::class => function () {
