@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace App\Action\Dashboard;
 
 use App\Action\ActionBase;
-use App\Domain\License\LicenseService;
+use App\Domain\Identity\IdentityRepository;
 use App\Support\FlashMessage;
-use PDO;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Interfaces\RouteParserInterface;
@@ -16,28 +15,27 @@ use Throwable;
 
 class ResetDatabaseAction extends ActionBase
 {
-    private PDO $pdo;
-    private LicenseService $licenseService;
+    private IdentityRepository $identityRepo;
 
     public function __construct(
         PhpRenderer $renderer,
         FlashMessage $flash,
         RouteParserInterface $routeParser,
-        PDO $pdo,
-        LicenseService $licenseService
+        IdentityRepository $identityRepo
     ) {
         parent::__construct($renderer, $flash, $routeParser);
-        $this->pdo = $pdo;
-        $this->licenseService = $licenseService;
+        $this->identityRepo = $identityRepo;
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
+        $this->verifyRuntimeGuard();
+
         try {
-            $this->licenseService->resetDatabaseToFactory($this->pdo);
-            $this->flash->add('success', 'Database has been reset to factory defaults!');
+            $this->identityRepo->resetDatabaseToFactory();
+            $this->flash->add('success', 'Database has been reset to factory defaults (device license preserved)!');
         } catch (Throwable $e) {
-            $this->flash->add('error', 'Failed to reset database: ' . $e->getMessage());
+            $this->flash->add('danger', 'Failed to reset database: ' . $e->getMessage());
         }
 
         return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '6']);

@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 use App\Domain\Deposit\DepositRepository;
 use App\Domain\Identity\IdentityRepository;
-use App\Domain\License\LicenseLogRepository;
-use App\Domain\License\LicenseService;
 use App\Domain\Title\TitleRepository;
 use App\Domain\Valas\ValasRepository;
 use App\Domain\Video\VideoRepository;
+use App\Middleware\SessionMiddleware;
 use App\Support\FileUploader;
 use App\Support\FlashMessage;
 use DI\ContainerBuilder;
@@ -26,7 +25,7 @@ $containerBuilder->addDefinitions([
     },
 
     PDO::class => function (ContainerInterface $c) {
-        return $c->get(LicenseService::class)->createDatabaseConnection($c->get('settings')['db']);
+        return $c->get(IdentityRepository::class)->openAuthorizedDatabase($c->get('settings')['db']);
     },
 
     ResponseFactoryInterface::class => function () {
@@ -38,16 +37,8 @@ $containerBuilder->addDefinitions([
         return new PhpRenderer($templatesPath);
     },
 
-    LicenseService::class => function (ContainerInterface $c) {
-        return new LicenseService($c->get('settings')['db']);
-    },
-
-    LicenseLogRepository::class => function (ContainerInterface $c) {
-        return new LicenseLogRepository($c->get(PDO::class));
-    },
-
     IdentityRepository::class => function (ContainerInterface $c) {
-        return new IdentityRepository($c->get(PDO::class));
+        return new IdentityRepository($c->get('settings')['db']);
     },
 
     TitleRepository::class => function (ContainerInterface $c) {
@@ -72,6 +63,15 @@ $containerBuilder->addDefinitions([
 
     FileUploader::class => function () {
         return new FileUploader();
+    },
+
+    SessionMiddleware::class => function (ContainerInterface $c) {
+        return new SessionMiddleware(
+            $c->get(IdentityRepository::class),
+            $c->get(PhpRenderer::class),
+            $c->get(ResponseFactoryInterface::class),
+            $c->get(FlashMessage::class)
+        );
     },
 
     App\Action\Dashboard\UpdateIdentityAction::class => function (ContainerInterface $c) {

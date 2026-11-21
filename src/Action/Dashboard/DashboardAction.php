@@ -7,7 +7,6 @@ namespace App\Action\Dashboard;
 use App\Action\ActionBase;
 use App\Domain\Deposit\DepositRepository;
 use App\Domain\Identity\IdentityRepository;
-use App\Domain\License\LicenseService;
 use App\Domain\Title\TitleRepository;
 use App\Domain\Valas\ValasRepository;
 use App\Domain\Video\VideoRepository;
@@ -24,7 +23,6 @@ class DashboardAction extends ActionBase
     private ValasRepository $valasRepo;
     private DepositRepository $depositRepo;
     private VideoRepository $videoRepo;
-    private LicenseService $licenseService;
 
     public function __construct(
         PhpRenderer $renderer,
@@ -34,8 +32,7 @@ class DashboardAction extends ActionBase
         TitleRepository $titleRepo,
         ValasRepository $valasRepo,
         DepositRepository $depositRepo,
-        VideoRepository $videoRepo,
-        LicenseService $licenseService
+        VideoRepository $videoRepo
     ) {
         parent::__construct($renderer, $flash, $routeParser);
         $this->identityRepo = $identityRepo;
@@ -43,7 +40,6 @@ class DashboardAction extends ActionBase
         $this->valasRepo = $valasRepo;
         $this->depositRepo = $depositRepo;
         $this->videoRepo = $videoRepo;
-        $this->licenseService = $licenseService;
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
@@ -53,7 +49,7 @@ class DashboardAction extends ActionBase
         $valasList = $this->valasRepo->getAll();
         $depositsData = $this->depositRepo->getAllTables();
         $videosList = $this->videoRepo->getAll();
-        $licenseStatus = $this->licenseService->getStatus();
+        $licenseStatus = $this->identityRepo->getStatus();
 
         $queryParams = $request->getQueryParams();
         $activeTab = (int)($queryParams['tab'] ?? 1);

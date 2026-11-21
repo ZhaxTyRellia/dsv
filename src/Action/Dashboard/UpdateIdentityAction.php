@@ -86,4 +86,59 @@ class UpdateIdentityAction extends ActionBase
 
         return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '6']);
     }
+
+    public function showActivation(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        if ($this->identityRepo->isActivated()) {
+            return $this->redirectToRoute($response, 'dashboard');
+        }
+
+        $status = $this->identityRepo->getStatus();
+
+        return $this->render($response, 'dashboard/activate.php', [
+            'device_id' => $status['device_id'],
+            'platform' => $status['platform'],
+            'is_licensed' => false,
+            'error_msg' => null,
+            'flashMessages' => $this->flash->get(),
+        ]);
+    }
+
+    public function submitActivation(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        $body = (array)($request->getParsedBody() ?? []);
+        $key = trim((string)($body['activate_key'] ?? ($body['serial_number'] ?? '')));
+
+        $result = $this->identityRepo->activate($key);
+
+        if ($result['success']) {
+            $this->flash->add('success', $result['message']);
+            return $this->redirectToRoute($response, 'dashboard');
+        }
+
+        $status = $this->identityRepo->getStatus();
+
+        return $this->render($response, 'dashboard/activate.php', [
+            'device_id' => $status['device_id'],
+            'platform' => $status['platform'],
+            'is_licensed' => false,
+            'error_msg' => $result['message'],
+            'flashMessages' => $this->flash->get(),
+        ]);
+    }
+
+    public function deactivate(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        $this->verifyRuntimeGuard();
+
+        $result = $this->identityRepo->deactivate();
+
+        if ($result['success']) {
+            $this->flash->add('success', $result['message']);
+            return $this->redirectToRoute($response, 'dashboard');
+        }
+
+        $this->flash->add('danger', $result['message']);
+        return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '6']);
+    }
 }

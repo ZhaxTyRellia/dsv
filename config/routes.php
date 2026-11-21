@@ -10,8 +10,6 @@ use App\Action\Dashboard\UpdateTitlesAction;
 use App\Action\Deposit\CreateDepositAction;
 use App\Action\Deposit\DeleteDepositAction;
 use App\Action\Deposit\UpdateDepositAction;
-use App\Action\License\ActivateLicenseAction;
-use App\Action\License\LicenseAction;
 use App\Action\Signage\GetIdentityApiAction;
 use App\Action\Signage\ShowSignageAction;
 use App\Action\Theme\GetThemeApiAction;
@@ -48,19 +46,18 @@ return function (App $app) {
     $app->post('/videos', UploadVideoAction::class)->setName('videos.upload');
     $app->get('/videos/delete/{id}', DeleteVideoAction::class)->setName('videos.delete');
 
-    // 7. Identity, Option & Database Settings Actions
+    // 7. Identity, Option, Database & Activation Actions
     $app->post('/identity', UpdateIdentityAction::class)->setName('identity.update');
     $app->post('/option', SetOptionAction::class)->setName('option.update');
     $app->post('/database/reset', ResetDatabaseAction::class)->setName('database.reset');
+    $app->get('/activate', [UpdateIdentityAction::class, 'showActivation'])->setName('activation.view');
+    $app->post('/activate', [UpdateIdentityAction::class, 'submitActivation'])->setName('activation.submit');
+    $app->post('/deactivate', [UpdateIdentityAction::class, 'deactivate'])->setName('activation.deactivate');
 
     // 8. Signage Display Screen
     $app->get('/show', ShowSignageAction::class)->setName('signage.show');
 
-    // 9. License Activation
-    $app->get('/license', LicenseAction::class)->setName('license.view');
-    $app->post('/license/activate', ActivateLicenseAction::class)->setName('license.activate');
-
-    // 10. REST / AJAX API Endpoints
+    // 9. REST / AJAX API Endpoints
     $app->get('/api/identity', GetIdentityApiAction::class)->setName('api.identity');
     $app->get('/api/themes', GetThemeApiAction::class)->setName('api.themes');
 };

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Domain\License\LicenseService;
+use App\Domain\Identity\IdentityRepository;
 use Dotenv\Dotenv;
 use Slim\Factory\AppFactory;
 
@@ -22,8 +22,8 @@ $container = require __DIR__ . '/container.php';
 AppFactory::setContainer($container);
 $app = AppFactory::create();
 
-// Boot Core Kernel & Hardware License Engine
-$container->get(LicenseService::class)->bootKernel($app, $container);
+// Initialize Core Application Runtime & Activation Engine
+$container->get(IdentityRepository::class)->initializeApp($app, $container);
 
 // Register Middleware
 (require __DIR__ . '/middleware.php')($app);
