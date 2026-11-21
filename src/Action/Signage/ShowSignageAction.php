@@ -52,10 +52,11 @@ class ShowSignageAction extends ActionBase
             $activeTheme = $identity['themes'] ?? 'show-0.css';
         }
 
+        $basePath = rtrim((string)($this->renderer->getAttribute('basePath') ?? ''), '/');
         $playlist = [];
         foreach ($videos as $video) {
             if (!empty($video['file_name'])) {
-                $playlist[] = '/dsv/videos/' . htmlspecialchars((string)$video['file_name']);
+                $playlist[] = $basePath . '/videos/' . rawurlencode((string)$video['file_name']);
             }
         }
 

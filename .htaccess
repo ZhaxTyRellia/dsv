@@ -2,6 +2,11 @@ Options -Indexes
 
 RewriteEngine On
 
+# Block direct HTTP access to sensitive directories and SQLite/config files
+RewriteRule ^(storage|config|src|templates|vendor|\.git)(/|$) - [NC,F,L]
+RewriteRule (^|/)\.(env|htaccess|git) - [NC,F,L]
+RewriteRule \.(db|db-wal|db-shm|db-journal|sqlite|sqlite3|sql|bak|log)$ - [NC,F,L]
+
 # Serve static assets directly from public/ directory
 RewriteRule ^(css|img|js|videos)/(.*)$ public/$1/$2 [L]
 RewriteRule ^app/(css|img|js|videos)/(.*)$ public/$1/$2 [L]

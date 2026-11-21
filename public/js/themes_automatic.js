@@ -11,8 +11,10 @@ document.addEventListener('DOMContentLoaded', function () {
         activeTheme = parts[parts.length - 1].split('?')[0];
     }
 
+    const appBasePath = (typeof window.APP_BASE_PATH === 'string' ? window.APP_BASE_PATH : '').replace(/\/+$/, '');
+
     function checkDatabaseTheme() {
-        fetch('/dsv/api/themes')
+        fetch(appBasePath + '/api/themes')
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success' && data.theme) {
@@ -21,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         const themeLink = document.getElementById('theme-stylesheet');
                         if (themeLink) {
-                            themeLink.href = '/dsv/css/' + data.theme + '?v=' + new Date().getTime();
+                            themeLink.href = appBasePath + '/css/' + data.theme + '?v=' + new Date().getTime();
                             console.log("Theme automatically updated to: " + data.theme);
                         }
                     }

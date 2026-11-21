@@ -27,7 +27,7 @@ class DepositRepository
     public function getAll(int $depositIndex): array
     {
         $table = $this->getTableName($depositIndex);
-        $stmt = $this->pdo->query("SELECT * FROM `{$table}` ORDER BY id ASC");
+        $stmt = $this->pdo->query("SELECT * FROM \"{$table}\" ORDER BY id ASC");
         return $stmt->fetchAll();
     }
 
@@ -43,7 +43,7 @@ class DepositRepository
     public function getById(int $depositIndex, int $id): ?array
     {
         $table = $this->getTableName($depositIndex);
-        $stmt = $this->pdo->prepare("SELECT * FROM `{$table}` WHERE id = :id");
+        $stmt = $this->pdo->prepare("SELECT * FROM \"{$table}\" WHERE id = :id");
         $stmt->execute([':id' => $id]);
         $row = $stmt->fetch();
         return $row ?: null;
@@ -58,7 +58,7 @@ class DepositRepository
     ): bool {
         $table = $this->getTableName($depositIndex);
         $stmt = $this->pdo->prepare(
-            "INSERT INTO `{$table}` (tenor, interest_rate, min_amount, description) 
+            "INSERT INTO \"{$table}\" (tenor, interest_rate, min_amount, description) 
              VALUES (:tenor, :interest_rate, :min_amount, :description)"
         );
         return $stmt->execute([
@@ -79,7 +79,7 @@ class DepositRepository
     ): bool {
         $table = $this->getTableName($depositIndex);
         $stmt = $this->pdo->prepare(
-            "UPDATE `{$table}` 
+            "UPDATE \"{$table}\" 
              SET tenor = :tenor, interest_rate = :interest_rate, min_amount = :min_amount, description = :description 
              WHERE id = :id"
         );
@@ -95,7 +95,7 @@ class DepositRepository
     public function delete(int $depositIndex, int $id): bool
     {
         $table = $this->getTableName($depositIndex);
-        $stmt = $this->pdo->prepare("DELETE FROM `{$table}` WHERE id = :id");
+        $stmt = $this->pdo->prepare("DELETE FROM \"{$table}\" WHERE id = :id");
         return $stmt->execute([':id' => $id]);
     }
 }

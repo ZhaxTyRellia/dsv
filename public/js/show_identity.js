@@ -1,5 +1,7 @@
+const APP_BASE_PATH = (typeof window.APP_BASE_PATH === 'string' ? window.APP_BASE_PATH : '').replace(/\/+$/, '');
+
 function refreshIdentity() {
-    fetch('/dsv/api/identity')
+    fetch(`${APP_BASE_PATH}/api/identity`)
         .then(response => response.json())
         .then(data => {
             document.getElementById('header-title-text').textContent = data.title;
@@ -10,7 +12,7 @@ function refreshIdentity() {
 
             const logoContainer = document.getElementById('logo-container');
             if (data.logoUrl) {
-                const fullLogoPath = `/dsv/img/logo/${data.logoUrl}`;
+                const fullLogoPath = `${APP_BASE_PATH}/img/logo/${data.logoUrl}`;
                 let logoImg = document.getElementById('header-logo-img');
 
                 if (!logoImg) {

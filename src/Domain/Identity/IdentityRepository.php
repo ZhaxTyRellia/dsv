@@ -17,7 +17,7 @@ class IdentityRepository
 
     public function get(): ?array
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM identity ORDER BY id ASC LIMIT 1');
+        $stmt = $this->pdo->prepare('SELECT id, logo, title, name, marquee, options, themes FROM identity ORDER BY id ASC LIMIT 1');
         $stmt->execute();
         $row = $stmt->fetch();
         return $row ?: null;

@@ -190,6 +190,7 @@
         </script>
     <?php endif; ?>
 
+    <script>window.APP_BASE_PATH = <?= json_encode((string)$basePath, JSON_UNESCAPED_SLASHES); ?>;</script>
     <script src="<?= $basePath; ?>/js/sidebar.js"></script>
     <script src="<?= $basePath; ?>/js/clock.js"></script>
     <script src="<?= $basePath; ?>/js/scrolling.js"></script>

@@ -7,16 +7,28 @@ return [
         'name' => 'Display Signage Valas (DSV)',
         'env' => $_ENV['APP_ENV'] ?? 'development',
         'debug' => filter_var($_ENV['APP_DEBUG'] ?? true, FILTER_VALIDATE_BOOLEAN),
-        'base_path' => $_ENV['APP_BASE_PATH'] ?? '/dsv',
+        'base_path' => $_ENV['APP_BASE_PATH'] ?? 'auto',
     ],
     'db' => [
-        'driver' => 'mysql',
-        'host' => $_ENV['DB_HOST'] ?? 'localhost',
-        'port' => (int)($_ENV['DB_PORT'] ?? 3306),
-        'database' => $_ENV['DB_NAME'] ?? 'dsv',
-        'username' => $_ENV['DB_USER'] ?? 'root',
-        'password' => $_ENV['DB_PASS'] ?? '',
-        'charset' => $_ENV['DB_CHARSET'] ?? 'utf8mb4',
+        'driver' => 'sqlite',
+        'path' => (function (): string {
+            $configured = trim((string)($_ENV['DB_PATH'] ?? 'storage/dsv.db'));
+            if ($configured === '') {
+                $configured = 'storage/dsv.db';
+            }
+
+            if (
+                $configured === ':memory:' ||
+                str_starts_with($configured, '/') ||
+                str_starts_with($configured, '\\') ||
+                preg_match('/^[A-Za-z]:[\\\\\/]/', $configured) === 1
+            ) {
+                return $configured;
+            }
+
+            return dirname(__DIR__) . DIRECTORY_SEPARATOR . str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $configured);
+        })(),
+        'busy_timeout' => (int)($_ENV['DB_BUSY_TIMEOUT'] ?? 5000),
         'flags' => [
             PDO::ATTR_PERSISTENT => false,
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -27,6 +39,7 @@ return [
     'paths' => [
         'root' => dirname(__DIR__),
         'public' => dirname(__DIR__) . '/public',
+        'storage' => dirname(__DIR__) . '/storage',
         'templates' => dirname(__DIR__) . '/templates',
         'uploads' => [
             'logo' => dirname(__DIR__) . '/public/img/logo',

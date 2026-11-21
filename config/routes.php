@@ -26,6 +26,7 @@ use Slim\App;
 return function (App $app) {
     // 1. Dashboard View
     $app->get('/', DashboardAction::class)->setName('dashboard');
+    $app->get('/index.php', DashboardAction::class)->setName('dashboard.index');
 
     // 2. Titles Management Action
     $app->post('/titles', UpdateTitlesAction::class)->setName('titles.update');

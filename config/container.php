@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Domain\Deposit\DepositRepository;
 use App\Domain\Identity\IdentityRepository;
+use App\Domain\License\LicenseLogRepository;
 use App\Domain\License\LicenseService;
 use App\Domain\Title\TitleRepository;
 use App\Domain\Valas\ValasRepository;
@@ -37,8 +38,12 @@ $containerBuilder->addDefinitions([
         return new PhpRenderer($templatesPath);
     },
 
-    LicenseService::class => function () {
-        return new LicenseService();
+    LicenseService::class => function (ContainerInterface $c) {
+        return new LicenseService($c->get('settings')['db']);
+    },
+
+    LicenseLogRepository::class => function (ContainerInterface $c) {
+        return new LicenseLogRepository($c->get(PDO::class));
     },
 
     IdentityRepository::class => function (ContainerInterface $c) {

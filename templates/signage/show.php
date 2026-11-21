@@ -189,6 +189,7 @@
         </div>
     </div>
 
+    <script>window.APP_BASE_PATH = <?= json_encode((string)$basePath, JSON_UNESCAPED_SLASHES); ?>;</script>
     <script src="<?= $basePath; ?>/js/show_clock.js"></script>
     <script src="<?= $basePath; ?>/js/show_identity.js"></script>
     <script src="<?= $basePath; ?>/js/auto_scroll_table.js"></script>

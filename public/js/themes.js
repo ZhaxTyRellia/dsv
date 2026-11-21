@@ -26,6 +26,7 @@ function selectThemeCard(radioInput, themeValue) {
 function updateThemePreview(themeValue) {
     const frame = document.getElementById('themePreviewFrame');
     if (frame) {
-        frame.src = '/dsv/show?preview_theme=' + encodeURIComponent(themeValue);
+        const appBasePath = (typeof window.APP_BASE_PATH === 'string' ? window.APP_BASE_PATH : '').replace(/\/+$/, '');
+        frame.src = appBasePath + '/show?preview_theme=' + encodeURIComponent(themeValue);
     }
 }
