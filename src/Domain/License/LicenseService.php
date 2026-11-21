@@ -828,7 +828,7 @@ class LicenseService
             ];
         }
 
-        $inputSerial = trim($inputSerial);
+        $inputSerial = strtolower(trim($inputSerial));
 
         if (!hash_equals($validSerial, $inputSerial)) {
             try {
@@ -912,7 +912,6 @@ class LicenseService
     {
         $deviceId = $this->getDeviceUUID();
         $platform = $this->getPlatform();
-        $validSerial = $this->generateValidKey($deviceId);
         $isLicensed = $this->isLicensed();
 
         $activatedAt = null;
@@ -928,7 +927,6 @@ class LicenseService
             'device_id' => $deviceId,
             'platform' => $platform,
             'activated_at' => $activatedAt,
-            'valid_key' => $validSerial,
             'storage' => 'sqlite:identity',
             'db_path' => (string)($this->dbSettings['path'] ?? ''),
         ];

@@ -167,9 +167,14 @@
 
     <script>
         function copyDeviceID() {
-            var deviceIdText = document.getElementById("deviceIdText").innerText;
-            navigator.clipboard.writeText(deviceIdText).then(function() {
+            var el = document.getElementById("deviceIdText");
+            if (!el) return;
+            var deviceIdText = (el.innerText || el.textContent || "").trim();
+            if (!deviceIdText || deviceIdText === "Not Detected") return;
+
+            function showCopiedState() {
                 var btn = document.querySelector(".btn-copy-device span");
+                if (!btn) return;
                 var originalText = btn.innerText;
                 btn.innerText = "Copied!";
                 btn.style.color = "#16a34a";
@@ -177,9 +182,35 @@
                     btn.innerText = originalText;
                     btn.style.color = "";
                 }, 1500);
-            }).catch(function(err) {
-                alert("Failed to copy text: ", err);
-            });
+            }
+
+            function fallbackCopy() {
+                var ta = document.createElement("textarea");
+                ta.value = deviceIdText;
+                ta.setAttribute("readonly", "");
+                ta.style.position = "fixed";
+                ta.style.opacity = "0";
+                document.body.appendChild(ta);
+                ta.select();
+                ta.setSelectionRange(0, deviceIdText.length);
+                try {
+                    if (document.execCommand("copy")) {
+                        showCopiedState();
+                    } else {
+                        alert("Failed to copy Device ID.");
+                    }
+                } catch (err) {
+                    alert("Failed to copy text: " + err);
+                } finally {
+                    document.body.removeChild(ta);
+                }
+            }
+
+            if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+                navigator.clipboard.writeText(deviceIdText).then(showCopiedState).catch(fallbackCopy);
+            } else {
+                fallbackCopy();
+            }
         }
     </script>
 </body>
