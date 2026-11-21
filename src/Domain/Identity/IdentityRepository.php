@@ -207,7 +207,7 @@ PEM;
         }
 
         $requiredTables = [
-            'identity', 'license_logs', 'titles', 'valas', 'videos',
+            'identity', 'titles', 'valas', 'videos',
             'deposit_1', 'deposit_2', 'deposit_3', 'deposit_4',
             'deposit_5', 'deposit_6', 'deposit_7', 'deposit_8',
         ];
@@ -283,18 +283,6 @@ PEM;
         ]);
     }
 
-    public function getRecentLogs(int $limit = 50): array
-    {
-        $this->assertRuntimeAuthorized();
-        $pdo = $this->openAuthorizedDatabase($this->dbSettings);
-        $limit = max(1, min(500, $limit));
-        $stmt = $pdo->prepare('SELECT * FROM "license_logs" ORDER BY "id" DESC LIMIT :limit');
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetchAll();
-    }
-
     private function migrateAndSeedDatabase(PDO $pdo, bool $truncateAll = false): bool
     {
         $pdo->exec('PRAGMA foreign_keys = OFF');
@@ -363,7 +351,7 @@ PEM;
                 $pdo->exec('DELETE FROM "valas"');
                 $pdo->exec('DELETE FROM "videos"');
 
-                // Preserve license_* columns on identity row id=1 and license_logs on factory reset
+                // Preserve license_* columns on identity row id=1 on factory reset
                 $pdo->exec('DELETE FROM "identity" WHERE "id" != 1');
                 $hasPrimaryIdentity = $pdo->query('SELECT 1 FROM "identity" WHERE "id" = 1 LIMIT 1')->fetchColumn();
                 if ($hasPrimaryIdentity !== false) {
@@ -505,18 +493,7 @@ PEM;
             )
         ');
 
-        $pdo->exec('
-            CREATE TABLE IF NOT EXISTS "license_logs" (
-                "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-                "event_type" TEXT NOT NULL,
-                "device_id" TEXT DEFAULT NULL,
-                "platform" TEXT NOT NULL DEFAULT \'unknown\',
-                "status" TEXT NOT NULL,
-                "message" TEXT DEFAULT NULL,
-                "ip_address" TEXT DEFAULT NULL,
-                "created_at" TEXT DEFAULT (datetime(\'now\', \'localtime\'))
-            )
-        ');
+        $pdo->exec('DROP TABLE IF EXISTS "license_logs"');
     }
 
     private function ensureIdentityLicenseColumns(PDO $pdo): void
@@ -574,53 +551,6 @@ PEM;
         return hash('sha256', $deviceId . '::' . $licenseKey . '::' . $platform . '::' . $this->publicKeyFingerprint . '::LICENSE_RECORD');
     }
 
-    private function recordLicenseLog(
-        PDO $pdo,
-        string $eventType,
-        ?string $deviceId,
-        string $platform,
-        string $status,
-        string $message
-    ): void {
-        $ip = isset($_SERVER['REMOTE_ADDR']) ? (string)$_SERVER['REMOTE_ADDR'] : null;
-
-        $stmt = $pdo->prepare('
-            INSERT INTO "license_logs" ("event_type", "device_id", "platform", "status", "message", "ip_address", "created_at")
-            VALUES (:event_type, :device_id, :platform, :status, :message, :ip_address, datetime(\'now\', \'localtime\'))
-        ');
-
-        $stmt->execute([
-            ':event_type' => $eventType,
-            ':device_id' => $deviceId,
-            ':platform' => $platform,
-            ':status' => $status,
-            ':message' => $message,
-            ':ip_address' => $ip,
-        ]);
-    }
-
-    private function recordMismatchIfNotRecent(PDO $pdo, ?string $deviceId, string $platform, string $message): void
-    {
-        try {
-            $stmt = $pdo->prepare('
-                SELECT 1 FROM "license_logs"
-                WHERE "event_type" = \'device_mismatch\'
-                  AND COALESCE("device_id", \'\') = :device_id
-                  AND "created_at" >= datetime(\'now\', \'localtime\', \'-60 seconds\')
-                LIMIT 1
-            ');
-            $stmt->execute([':device_id' => $deviceId ?? '']);
-
-            if ($stmt->fetchColumn() !== false) {
-                return;
-            }
-
-            $this->recordLicenseLog($pdo, 'device_mismatch', $deviceId, $platform, 'rejected', $message);
-        } catch (\Throwable $e) {
-            // Do not break verification if logging fails
-        }
-    }
-
     private function readProcessEnvValue(string $key): string
     {
         $val = getenv($key);
@@ -666,8 +596,6 @@ PEM;
     private function verifyStoredRecord(bool $logMismatch = false): bool
     {
         $deviceId = $this->getDeviceUUID();
-        $platform = $this->getPlatform();
-
         $pdo = $this->getInternalPdo();
         $record = $this->getStoredLicenseRecord($pdo);
 
@@ -676,19 +604,7 @@ PEM;
         $storedPlatform = trim((string)($record['license_platform'] ?? ''));
         $storedIntegrity = trim((string)($record['license_integrity_hash'] ?? ''));
 
-        if ($storedKey === '') {
-            return false;
-        }
-
-        if (!$deviceId) {
-            if ($logMismatch) {
-                $this->recordMismatchIfNotRecent(
-                    $pdo,
-                    $deviceId,
-                    $platform,
-                    'Stored license exists but current Device ID could not be detected.'
-                );
-            }
+        if ($storedKey === '' || !$deviceId) {
             return false;
         }
 
@@ -698,19 +614,7 @@ PEM;
             && $storedIntegrity !== ''
             && hash_equals($this->computeIntegrityHash($storedDeviceId, $storedKey, $storedPlatform), $storedIntegrity);
 
-        if (!$keyValid || !$deviceMatches || !$integrityMatches) {
-            if ($logMismatch) {
-                $this->recordMismatchIfNotRecent(
-                    $pdo,
-                    $deviceId,
-                    $platform,
-                    'Stored SQLite license does not match current device or integrity check failed.'
-                );
-            }
-            return false;
-        }
-
-        return true;
+        return $keyValid && $deviceMatches && $integrityMatches;
     }
 
     public function renderView(
@@ -910,19 +814,6 @@ PEM;
         }
 
         if (!$deviceId) {
-            try {
-                $this->recordLicenseLog(
-                    $pdo,
-                    'activate',
-                    $deviceId,
-                    $platform,
-                    'failed',
-                    'Unable to detect Device ID on this system.'
-                );
-            } catch (\Throwable $e) {
-                // Ignore logging error
-            }
-
             return [
                 'success' => false,
                 'message' => 'Unable to detect Device ID on this system.',
@@ -932,19 +823,6 @@ PEM;
         $inputKey = trim($inputKey);
 
         if ($inputKey === '' || !$this->verifyActivateKey($deviceId, $inputKey)) {
-            try {
-                $this->recordLicenseLog(
-                    $pdo,
-                    'activate',
-                    $deviceId,
-                    $platform,
-                    'failed',
-                    'Invalid Activate Key submitted for this device.'
-                );
-            } catch (\Throwable $e) {
-                // Ignore logging error
-            }
-
             return [
                 'success' => false,
                 'message' => 'The Activate Key you entered is not valid for this device!',
@@ -980,15 +858,6 @@ PEM;
                 ':license_integrity_hash' => $integrityHash,
             ]);
 
-            $this->recordLicenseLog(
-                $pdo,
-                'activate',
-                $deviceId,
-                $platform,
-                'success',
-                'License activated and saved to SQLite identity table.'
-            );
-
             if ($startedTransaction && $pdo->inTransaction()) {
                 $pdo->commit();
             }
@@ -1011,9 +880,6 @@ PEM;
 
     public function deactivate(): array
     {
-        $deviceId = $this->getDeviceUUID();
-        $platform = $this->getPlatform();
-
         try {
             $pdo = $this->getInternalPdo();
         } catch (\Throwable $e) {
@@ -1040,15 +906,6 @@ PEM;
                 WHERE "id" = (SELECT "id" FROM "identity" ORDER BY "id" ASC LIMIT 1)
             ');
             $stmt->execute();
-
-            $this->recordLicenseLog(
-                $pdo,
-                'deactivate',
-                $deviceId,
-                $platform,
-                'success',
-                'Device license unbound and cleared from SQLite identity table.'
-            );
 
             if ($startedTransaction && $pdo->inTransaction()) {
                 $pdo->commit();

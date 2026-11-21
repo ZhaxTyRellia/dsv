@@ -83,11 +83,11 @@
                 </div>
 
                 <div class="identity-col-right">
-                    <form action="<?= $urlFor('database.reset'); ?>" method="POST" onsubmit="return confirm('Are you sure you want to reset the database to factory defaults? All Valas, Deposit, Titles, and Video data will be cleared.');">
+                    <form action="<?= $urlFor('database.reset'); ?>" method="POST" onsubmit="return confirm('Are you sure you want to reset the database to factory defaults? All Valas, Deposit, Titles, and Video data will be cleared. Device license will be preserved.');">
                         <h6 class="identity-section-title">Factory Reset Database</h6>
                         <div class="form-group" style="width: 100%; margin-top: 15px;">
                             <p style="font-size: 0.85rem; color: #64748b; margin: 0 0 12px 0; line-height: 1.5;">
-                                Restore all database tables to initial factory state. All currency rates, deposit tables, custom titles, and video playlists will be truncated to 0, while restoring default identity settings.
+                                Restore all database tables to initial factory state. All currency rates, deposit tables, custom titles, and video playlists will be truncated to 0, while restoring default identity settings. Lisensi perangkat tetap tersimpan dan tidak ikut terhapus.
                             </p>
                         </div>
                         <div class="identity-action-group">
@@ -98,6 +98,99 @@
                     </form>
                 </div>
             </div>
+
+            <hr class="identity-divider" style="margin: 30px 0; border: 0; border-top: 2px dashed #e2e8f0;">
+
+            <?php
+            $licDeviceId = (string)($licenseStatus['device_id'] ?? 'Not Detected');
+            $licPlatformRaw = strtolower((string)($licenseStatus['platform'] ?? 'unknown'));
+            $licPlatformLabel = match ($licPlatformRaw) {
+                'windows' => 'Windows Host',
+                'android_kiosign' => 'Android KioSign',
+                'linux' => 'Linux Host',
+                default => 'Unknown',
+            };
+            $licActivatedAt = (string)($licenseStatus['activated_at'] ?? '-');
+            $licFp = (string)($licenseStatus['public_key_fp'] ?? '-');
+            ?>
+            <div class="identity-row">
+                <div class="identity-col-left">
+                    <h6 class="identity-section-title">Status Lisensi Perangkat</h6>
+                    <div class="license-info-panel">
+                        <div class="license-meta-row">
+                            <span class="license-badge-active">&#10003; Active &amp; Verified</span>
+                            <span class="license-badge-platform"><?= htmlspecialchars($licPlatformLabel, ENT_QUOTES, 'UTF-8'); ?></span>
+                        </div>
+                        <div class="license-detail-line">
+                            <span>Activated At:</span>
+                            <strong><?= htmlspecialchars($licActivatedAt !== '' ? $licActivatedAt : '-', ENT_QUOTES, 'UTF-8'); ?></strong>
+                        </div>
+                        <div class="license-detail-line">
+                            <span>Key Fingerprint:</span>
+                            <strong><code><?= htmlspecialchars($licFp, ENT_QUOTES, 'UTF-8'); ?></code></strong>
+                        </div>
+                        <div class="license-device-box">
+                            <span id="settingsDeviceIdText"><?= htmlspecialchars($licDeviceId, ENT_QUOTES, 'UTF-8'); ?></span>
+                            <button type="button" class="btn-copy-inline" onclick="copySettingsDeviceId(this)">Copy ID</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="identity-col-right">
+                    <form action="<?= $urlFor('activation.deactivate'); ?>" method="POST" onsubmit="return confirm('Bongkar lisensi perangkat ini? Aplikasi akan langsung kembali ke layar aktivasi dan membutuhkan Activate Key untuk digunakan kembali.');">
+                        <h6 class="identity-section-title">Pembongkaran Lisensi (Unbind)</h6>
+                        <div class="form-group" style="width: 100%; margin-top: 15px;">
+                            <p style="font-size: 0.85rem; color: #64748b; margin: 0 0 12px 0; line-height: 1.5;">
+                                Lepaskan ikatan Activate Key dari perangkat ini untuk kembali ke halaman <strong>Activate Key</strong> (misalnya sebelum memindahkan lisensi atau uji ulang aktivasi). Data Valas, Deposit, Titles, dan Video Anda tetap aman.
+                            </p>
+                        </div>
+                        <div class="identity-action-group">
+                            <button type="submit" name="deactivate_license_btn" class="identity-btn-submit identity-btn-unbind">
+                                Bongkar Lisensi
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </section>
+
+<script>
+function copySettingsDeviceId(btn) {
+    var el = document.getElementById('settingsDeviceIdText');
+    if (!el) return;
+    var text = (el.innerText || el.textContent || '').trim();
+    if (!text || text === 'Not Detected') return;
+
+    function done() {
+        var orig = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(function () { btn.innerText = orig; }, 1500);
+    }
+
+    function fallback() {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        ta.setSelectionRange(0, text.length);
+        try {
+            if (document.execCommand('copy')) {
+                done();
+            }
+        } finally {
+            document.body.removeChild(ta);
+        }
+    }
+
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+        navigator.clipboard.writeText(text).then(done).catch(fallback);
+    } else {
+        fallback();
+    }
+}
+</script>
