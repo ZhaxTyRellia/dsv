@@ -25,17 +25,28 @@ use Slim\Views\PhpRenderer;
  */
 class LicenseService
 {
+    private const DEFAULT_PUBLIC_KEY_PEM = <<<'PEM'
+-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEa4EhCDAJbrR3FrB883Q7cy/jP0Y+
+dOOKynJavjU3HKpOBkr/xaPCGJTwm0wiBNTcnboSDFz6SXgsI6b21XwTmg==
+-----END PUBLIC KEY-----
+PEM;
+
     private array $dbSettings;
-    private string $secretSalt;
+    private string $publicKeyPem;
+    private string $publicKeyFingerprint;
+    private string $runtimeNonce;
     private ?PDO $kernelPdo = null;
     private ?string $cachedDeviceId = null;
     private ?string $cachedPlatform = null;
     private bool $kernelBooted = false;
     private string $runtimeSeal = '';
 
-    public function __construct(?array $dbSettings = null, ?string $secretSalt = null)
+    public function __construct(?array $dbSettings = null, ?string $publicKeyPem = null)
     {
-        $this->secretSalt = $secretSalt ?: 'GautavarisKey!!!';
+        $this->publicKeyPem = trim((string)($publicKeyPem ?: self::DEFAULT_PUBLIC_KEY_PEM));
+        $this->publicKeyFingerprint = hash('sha256', $this->publicKeyPem);
+        $this->runtimeNonce = bin2hex(random_bytes(32));
 
         if ($dbSettings !== null && !empty($dbSettings['path'])) {
             $this->dbSettings = $dbSettings;
@@ -140,8 +151,9 @@ class LicenseService
         }
 
         $deviceId = (string)$this->getDeviceUUID();
-        $validKey = (string)$this->generateValidKey($deviceId);
-        $this->runtimeSeal = hash_hmac('sha256', $deviceId . '::KERNEL_SEAL::' . $validKey, $this->secretSalt);
+        $record = $this->getStoredLicenseRecord($this->getKernelPdo());
+        $storedKey = trim((string)($record['license_key'] ?? ''));
+        $this->runtimeSeal = hash_hmac('sha256', $deviceId . '::KERNEL_SEAL::' . $storedKey, $this->runtimeNonce);
     }
 
     /**
@@ -154,13 +166,13 @@ class LicenseService
         }
 
         $deviceId = $this->getDeviceUUID();
-        $validSerial = $this->generateValidKey($deviceId);
-
-        if (!$validSerial || !$this->verifyStoredLicense(false)) {
+        if (!$deviceId || !$this->verifyStoredLicense(false)) {
             throw new RuntimeException('Fatal System Error: Hardware license key is missing, invalid, or mismatched in SQLite identity table.');
         }
 
-        $expectedSeal = hash_hmac('sha256', $deviceId . '::KERNEL_SEAL::' . $validSerial, $this->secretSalt);
+        $record = $this->getStoredLicenseRecord($this->getKernelPdo());
+        $storedKey = trim((string)($record['license_key'] ?? ''));
+        $expectedSeal = hash_hmac('sha256', $deviceId . '::KERNEL_SEAL::' . $storedKey, $this->runtimeNonce);
         if (!hash_equals($expectedSeal, $this->runtimeSeal)) {
             throw new RuntimeException('Fatal System Error: Runtime kernel seal integrity compromised.');
         }
@@ -496,7 +508,7 @@ class LicenseService
 
     private function computeIntegrityHash(string $deviceId, string $licenseKey, string $platform): string
     {
-        return hash_hmac('sha256', $deviceId . '::' . $licenseKey . '::' . $platform . '::LICENSE_RECORD', $this->secretSalt);
+        return hash('sha256', $deviceId . '::' . $licenseKey . '::' . $platform . '::' . $this->publicKeyFingerprint . '::LICENSE_RECORD');
     }
 
     private function recordLicenseLog(
@@ -593,7 +605,6 @@ class LicenseService
     {
         $deviceId = $this->getDeviceUUID();
         $platform = $this->getPlatform();
-        $validSerial = $this->generateValidKey($deviceId);
 
         $pdo = $this->getKernelPdo();
         $record = $this->getStoredLicenseRecord($pdo);
@@ -607,7 +618,7 @@ class LicenseService
             return false;
         }
 
-        if (!$deviceId || !$validSerial) {
+        if (!$deviceId) {
             if ($logMismatch) {
                 $this->recordMismatchIfNotRecent(
                     $pdo,
@@ -619,13 +630,13 @@ class LicenseService
             return false;
         }
 
-        $keyMatches = hash_equals($validSerial, $storedKey);
+        $keyValid = $this->verifyActivateKey($deviceId, $storedKey);
         $deviceMatches = $storedDeviceId !== '' && hash_equals($deviceId, $storedDeviceId);
         $integrityMatches = $storedPlatform !== ''
             && $storedIntegrity !== ''
             && hash_equals($this->computeIntegrityHash($storedDeviceId, $storedKey, $storedPlatform), $storedIntegrity);
 
-        if (!$keyMatches || !$deviceMatches || !$integrityMatches) {
+        if (!$keyValid || !$deviceMatches || !$integrityMatches) {
             if ($logMismatch) {
                 $this->recordMismatchIfNotRecent(
                     $pdo,
@@ -776,12 +787,53 @@ class LicenseService
         return $this->cachedPlatform ?? 'unknown';
     }
 
-    public function generateValidKey(?string $deviceId): ?string
+    public function normalizeDeviceId(string $deviceId): string
     {
-        if (empty($deviceId)) {
+        return strtoupper(trim($deviceId));
+    }
+
+    private function decodeActivateKey(string $activateKey): ?string
+    {
+        $trimmed = trim($activateKey);
+        if ($trimmed === '' || preg_match('/^[A-Za-z0-9\-_]+$/', $trimmed) !== 1) {
             return null;
         }
-        return hash_hmac('sha256', $deviceId, $this->secretSalt);
+
+        $remainder = strlen($trimmed) % 4;
+        if ($remainder !== 0) {
+            $trimmed .= str_repeat('=', 4 - $remainder);
+        }
+
+        $decoded = base64_decode(strtr($trimmed, '-_', '+/'), true);
+        if ($decoded === false) {
+            return null;
+        }
+
+        $len = strlen($decoded);
+        if ($len < 64 || $len > 128) {
+            return null;
+        }
+
+        return $decoded;
+    }
+
+    public function verifyActivateKey(?string $deviceId, string $activateKey): bool
+    {
+        if ($deviceId === null || trim($deviceId) === '' || !function_exists('openssl_verify')) {
+            return false;
+        }
+
+        $rawSignature = $this->decodeActivateKey($activateKey);
+        if ($rawSignature === null) {
+            return false;
+        }
+
+        return @openssl_verify(
+            $this->normalizeDeviceId($deviceId),
+            $rawSignature,
+            $this->publicKeyPem,
+            OPENSSL_ALGO_SHA256
+        ) === 1;
     }
 
     public function isLicensed(): bool
@@ -797,7 +849,6 @@ class LicenseService
     {
         $deviceId = $this->getDeviceUUID();
         $platform = $this->getPlatform();
-        $validSerial = $this->generateValidKey($deviceId);
 
         try {
             $pdo = $this->getKernelPdo();
@@ -808,7 +859,7 @@ class LicenseService
             ];
         }
 
-        if (!$validSerial || !$deviceId) {
+        if (!$deviceId) {
             try {
                 $this->recordLicenseLog(
                     $pdo,
@@ -828,9 +879,9 @@ class LicenseService
             ];
         }
 
-        $inputSerial = strtolower(trim($inputSerial));
+        $inputKey = trim($inputSerial);
 
-        if (!hash_equals($validSerial, $inputSerial)) {
+        if ($inputKey === '' || !$this->verifyActivateKey($deviceId, $inputKey)) {
             try {
                 $this->recordLicenseLog(
                     $pdo,
@@ -838,7 +889,7 @@ class LicenseService
                     $deviceId,
                     $platform,
                     'failed',
-                    'Invalid serial number submitted for this device.'
+                    'Invalid Activate Key submitted for this device.'
                 );
             } catch (\Throwable $e) {
                 // Ignore logging error
@@ -846,7 +897,7 @@ class LicenseService
 
             return [
                 'success' => false,
-                'message' => 'The serial number you entered is not valid for this device!',
+                'message' => 'The Activate Key you entered is not valid for this device!',
             ];
         }
 
@@ -860,7 +911,7 @@ class LicenseService
             $this->seedDefaultIdentity($pdo);
 
             $activatedAt = date('Y-m-d H:i:s');
-            $integrityHash = $this->computeIntegrityHash($deviceId, $inputSerial, $platform);
+            $integrityHash = $this->computeIntegrityHash($deviceId, $inputKey, $platform);
 
             $stmt = $pdo->prepare('
                 UPDATE "identity"
@@ -872,7 +923,7 @@ class LicenseService
                 WHERE "id" = (SELECT "id" FROM "identity" ORDER BY "id" ASC LIMIT 1)
             ');
             $stmt->execute([
-                ':license_key' => $inputSerial,
+                ':license_key' => $inputKey,
                 ':license_device_id' => $deviceId,
                 ':license_platform' => $platform,
                 ':license_activated_at' => $activatedAt,

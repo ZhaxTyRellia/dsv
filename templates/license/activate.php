@@ -159,8 +159,8 @@
         </div>
 
         <form method="POST" action="<?= $urlFor('license.activate'); ?>">
-            <label for="serial_number" style="font-weight: 600; font-size: 13px; color: #334155;">Enter Serial Number:</label>
-            <input type="text" id="serial_number" name="serial_number" class="form-input" placeholder="Enter your official license code" required autocomplete="off">
+            <label for="serial_number" style="font-weight: 600; font-size: 13px; color: #334155;">Enter Activate Key:</label>
+            <input type="text" id="serial_number" name="serial_number" class="form-input" placeholder="Paste your official Activate Key" required autocomplete="off">
             <button type="submit" name="activate_license" class="btn-submit">Activate License</button>
         </form>
     </div>
