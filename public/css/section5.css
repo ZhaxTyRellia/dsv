@@ -1,0 +1,43 @@
+/* ========================================================================= */
+/* SECTION 5: VIDEOS MANAGEMENT                                              */
+/* ========================================================================= */
+.video-upload-box {
+    width: 100%;
+    padding: 16px;
+    border: 2px dashed rgba(99, 102, 241, 0.35);
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(14, 165, 233, 0.05) 100%);
+    transition: border-color 0.2s ease;
+}
+
+.video-upload-box:hover {
+    border-color: var(--indigo);
+}
+
+.video-file-badge {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text-main);
+    background: var(--bg-surface);
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.video-date-pill {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #0369a1;
+    background: #e0f2fe;
+    border: 1px solid #bae6fd;
+}
+
+[data-theme="dark"] .video-date-pill {
+    color: #38bdf8;
+    background: rgba(14, 165, 233, 0.16);
+    border-color: rgba(56, 189, 248, 0.3);
+}

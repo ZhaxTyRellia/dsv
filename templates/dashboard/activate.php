@@ -19,19 +19,16 @@ $deviceIdStr = trim((string)($device_id ?? ''));
     <link rel="shortcut icon" type="image/png" href="<?= $basePath; ?>/img/favicon.png">
     <style>
         :root {
-            --bg-0: #050814;
-            --bg-1: #0b1120;
-            --card-bg: rgba(15, 23, 42, 0.78);
-            --card-border: rgba(148, 163, 184, 0.16);
-            --surface: rgba(2, 6, 23, 0.65);
-            --surface-border: rgba(56, 189, 248, 0.22);
-            --text: #f8fafc;
-            --muted: #94a3b8;
-            --accent: #38bdf8;
+            --bg-base: #f4f7fb;
+            --card-bg: rgba(255, 255, 255, 0.96);
+            --card-border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
             --indigo: #6366f1;
-            --emerald: #34d399;
-            --amber: #fbbf24;
-            --rose: #fb7185;
+            --sky: #0ea5e9;
+            --emerald: #10b981;
+            --amber: #f59e0b;
+            --rose: #ef4444;
         }
 
         * {
@@ -47,94 +44,63 @@ $deviceIdStr = trim((string)($device_id ?? ''));
             justify-content: center;
             padding: 24px 16px;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            color: var(--text);
-            background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.14), transparent 42%),
-                        radial-gradient(circle at bottom right, rgba(99, 102, 241, 0.16), transparent 45%),
-                        linear-gradient(155deg, var(--bg-0) 0%, var(--bg-1) 100%);
-            position: relative;
-            overflow-x: hidden;
+            color: var(--text-main);
+            background-color: var(--bg-base);
+            background-image:
+                radial-gradient(circle at 12% 18%, rgba(99, 102, 241, 0.18) 0%, transparent 42%),
+                radial-gradient(circle at 88% 15%, rgba(14, 165, 233, 0.20) 0%, transparent 42%),
+                radial-gradient(circle at 82% 85%, rgba(16, 185, 129, 0.16) 0%, transparent 45%),
+                radial-gradient(circle at 16% 84%, rgba(245, 158, 11, 0.14) 0%, transparent 42%),
+                url("<?= $basePath; ?>/img/login.png");
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
         }
 
-        .ambient-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.35;
-            pointer-events: none;
-            z-index: 0;
-            animation: floatGlow 10s ease-in-out infinite alternate;
-        }
-
-        .ambient-orb-1 {
-            width: 320px;
-            height: 320px;
-            background: #0284c7;
-            top: -80px;
-            left: -80px;
-        }
-
-        .ambient-orb-2 {
-            width: 300px;
-            height: 300px;
-            background: #4f46e5;
-            bottom: -80px;
-            right: -80px;
-            animation-delay: -5s;
-        }
-
-        @keyframes floatGlow {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(18px, -14px) scale(1.08); }
-        }
-
-        @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(14px); }
+        @keyframes cardEnter {
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes pulseDot {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.45; transform: scale(0.8); }
+            50% { opacity: 0.45; transform: scale(0.82); }
         }
 
         .activation-card {
-            position: relative;
-            z-index: 1;
             width: 100%;
             max-width: 480px;
             background: var(--card-bg);
-            backdrop-filter: blur(22px);
-            -webkit-backdrop-filter: blur(22px);
             border: 1px solid var(--card-border);
             border-radius: 20px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            box-shadow:
+                0 20px 45px -12px rgba(15, 23, 42, 0.12),
+                0 8px 18px -6px rgba(99, 102, 241, 0.08);
             overflow: hidden;
-            animation: fadeSlideUp 0.35s ease-out;
+            animation: cardEnter 0.28s ease-out;
         }
 
         .card-accent-bar {
-            height: 4px;
+            height: 6px;
             width: 100%;
-            background: linear-gradient(90deg, #38bdf8 0%, #6366f1 50%, #a855f7 100%);
+            background: linear-gradient(90deg, #6366f1 0%, #0ea5e9 35%, #10b981 70%, #f59e0b 100%);
         }
 
         .card-body {
-            padding: 32px 28px 26px 28px;
+            padding: 30px 28px 26px 28px;
         }
 
         .emblem-wrap {
-            width: 56px;
-            height: 56px;
+            width: 58px;
+            height: 58px;
             margin: 0 auto 16px auto;
             border-radius: 16px;
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(99, 102, 241, 0.22));
-            border: 1px solid rgba(56, 189, 248, 0.35);
+            background: linear-gradient(135deg, #6366f1 0%, #0ea5e9 55%, #10b981 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--accent);
-            box-shadow: 0 10px 25px -5px rgba(56, 189, 248, 0.28);
+            color: #ffffff;
+            box-shadow: 0 10px 22px -4px rgba(14, 165, 233, 0.35);
         }
 
         .pill-row {
@@ -153,28 +119,28 @@ $deviceIdStr = trim((string)($device_id ?? ''));
             font-weight: 700;
             letter-spacing: 0.04em;
             text-transform: uppercase;
-            padding: 4px 10px;
+            padding: 4px 11px;
             border-radius: 999px;
         }
 
         .pill-status {
-            color: var(--amber);
-            background: rgba(251, 191, 36, 0.12);
-            border: 1px solid rgba(251, 191, 36, 0.3);
+            color: #b45309;
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
         }
 
         .pill-dot {
             width: 7px;
             height: 7px;
             border-radius: 50%;
-            background: var(--amber);
+            background: #f59e0b;
             animation: pulseDot 1.6s infinite;
         }
 
         .pill-platform {
-            color: #cbd5e1;
-            background: rgba(148, 163, 184, 0.1);
-            border: 1px solid rgba(148, 163, 184, 0.22);
+            color: #0369a1;
+            background: #e0f2fe;
+            border: 1px solid #bae6fd;
         }
 
         h1 {
@@ -182,7 +148,7 @@ $deviceIdStr = trim((string)($device_id ?? ''));
             font-size: 22px;
             font-weight: 800;
             letter-spacing: -0.02em;
-            color: #ffffff;
+            color: var(--text-main);
             margin-bottom: 8px;
         }
 
@@ -190,7 +156,7 @@ $deviceIdStr = trim((string)($device_id ?? ''));
             text-align: center;
             font-size: 13.5px;
             line-height: 1.55;
-            color: var(--muted);
+            color: var(--text-muted);
             margin-bottom: 22px;
         }
 
@@ -201,7 +167,7 @@ $deviceIdStr = trim((string)($device_id ?? ''));
             padding: 12px 14px;
             border-radius: 12px;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 600;
             line-height: 1.45;
             margin-bottom: 16px;
         }
@@ -212,15 +178,15 @@ $deviceIdStr = trim((string)($device_id ?? ''));
         }
 
         .alert-error {
-            color: #fecdd3;
-            background: rgba(244, 63, 94, 0.14);
-            border: 1px solid rgba(244, 63, 94, 0.35);
+            color: #b91c1c;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
         }
 
         .alert-success {
-            color: #a7f3d0;
-            background: rgba(16, 185, 129, 0.14);
-            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #047857;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
         }
 
         .field-label {
@@ -229,7 +195,7 @@ $deviceIdStr = trim((string)($device_id ?? ''));
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: #cbd5e1;
+            color: #475569;
             margin-bottom: 7px;
         }
 
@@ -238,8 +204,8 @@ $deviceIdStr = trim((string)($device_id ?? ''));
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            background: var(--surface);
-            border: 1px solid var(--surface-border);
+            background: linear-gradient(135deg, #f0f9ff 0%, #eef2ff 100%);
+            border: 1px solid #bae6fd;
             border-radius: 12px;
             padding: 12px 14px;
             margin-bottom: 20px;
@@ -249,7 +215,7 @@ $deviceIdStr = trim((string)($device_id ?? ''));
             font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
             font-size: 13px;
             font-weight: 700;
-            color: var(--accent);
+            color: #1d4ed8;
             word-break: break-all;
             user-select: all;
         }
@@ -263,50 +229,52 @@ $deviceIdStr = trim((string)($device_id ?? ''));
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 7px 12px;
+            padding: 7px 13px;
             border-radius: 8px;
-            border: 1px solid rgba(148, 163, 184, 0.25);
-            background: rgba(30, 41, 59, 0.85);
-            color: #e2e8f0;
+            border: 1px solid #c7d2fe;
+            background: #ffffff;
+            color: #4338ca;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.18s ease;
+            box-shadow: 0 2px 5px rgba(99, 102, 241, 0.08);
+            transition: all 0.16s ease;
         }
 
         .btn-copy:hover {
-            border-color: rgba(56, 189, 248, 0.5);
-            background: rgba(56, 189, 248, 0.16);
-            color: #ffffff;
+            border-color: #6366f1;
+            background: #eef2ff;
+            color: #3730a3;
         }
 
         .btn-copy.copied {
-            border-color: rgba(52, 211, 153, 0.5);
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--emerald);
+            border-color: #34d399;
+            background: #ecfdf5;
+            color: #059669;
         }
 
         .key-input {
             width: 100%;
             padding: 13px 14px;
             border-radius: 12px;
-            border: 1px solid rgba(148, 163, 184, 0.24);
-            background: var(--surface);
-            color: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            background: #f8fafc;
+            color: var(--text-main);
             font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
             font-size: 13.5px;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
             margin-bottom: 16px;
         }
 
         .key-input::placeholder {
-            color: #64748b;
+            color: #94a3b8;
         }
 
         .key-input:focus {
             outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
+            background: #ffffff;
+            border-color: var(--indigo);
+            box-shadow: 0 0 0 3.5px rgba(99, 102, 241, 0.15);
         }
 
         .btn-activate {
@@ -318,17 +286,17 @@ $deviceIdStr = trim((string)($device_id ?? ''));
             padding: 13px 18px;
             border: none;
             border-radius: 12px;
-            background: linear-gradient(135deg, #0284c7 0%, #4f46e5 100%);
+            background: linear-gradient(135deg, #6366f1 0%, #0ea5e9 55%, #10b981 100%);
             color: #ffffff;
             font-size: 14.5px;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.45);
+            box-shadow: 0 10px 22px -6px rgba(14, 165, 233, 0.45);
             transition: transform 0.15s ease, filter 0.15s ease, opacity 0.15s ease;
         }
 
         .btn-activate:hover {
-            filter: brightness(1.08);
+            filter: brightness(1.05);
             transform: translateY(-1px);
         }
 
@@ -344,10 +312,11 @@ $deviceIdStr = trim((string)($device_id ?? ''));
 
         .card-footer {
             padding: 13px 28px;
-            border-top: 1px solid rgba(148, 163, 184, 0.12);
-            background: rgba(2, 6, 23, 0.35);
+            border-top: 1px solid #f1f5f9;
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.04), rgba(14, 165, 233, 0.05), rgba(16, 185, 129, 0.04));
             text-align: center;
             font-size: 11.5px;
+            font-weight: 600;
             color: #64748b;
             letter-spacing: 0.02em;
         }
@@ -355,14 +324,11 @@ $deviceIdStr = trim((string)($device_id ?? ''));
 </head>
 
 <body>
-    <div class="ambient-orb ambient-orb-1"></div>
-    <div class="ambient-orb ambient-orb-2"></div>
-
     <main class="activation-card">
         <div class="card-accent-bar"></div>
         <div class="card-body">
             <div class="emblem-wrap" aria-hidden="true">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                     <circle cx="12" cy="11" r="2"/>
                     <path d="M12 13v3"/>

@@ -26,11 +26,15 @@
             position: fixed;
             z-index: 9999;
             inset: 0;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(244, 247, 251, 0.94);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.5s;
+            transition: opacity 0.4s ease;
+        }
+
+        [data-theme="dark"] #loading-screen {
+            background: rgba(11, 17, 32, 0.94);
         }
 
         #loading-screen.hide {
@@ -39,41 +43,42 @@
         }
 
         .loading-svg {
-            width: 70px;
-            height: 70px;
-            animation: pulse 1.2s infinite alternate;
+            width: 64px;
+            height: 64px;
+            animation: pulse 1.1s infinite alternate;
         }
 
         @keyframes pulse {
-            0% { filter: drop-shadow(0 0 0 #d9003c); }
-            100% { filter: drop-shadow(0 0 12px #d9003c); }
+            0% { filter: drop-shadow(0 0 0 #6366f1); }
+            100% { filter: drop-shadow(0 0 12px #0ea5e9); }
         }
 
         .loading-text {
-            margin-top: 18px;
+            margin-top: 14px;
             text-align: center;
-            font-size: 1.1em;
-            color: #d9003c;
-            font-family: Arial, sans-serif;
-            letter-spacing: 1px;
-            animation: fadein 1.2s infinite alternate;
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: #4f46e5;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            animation: fadein 1.1s infinite alternate;
         }
 
         @keyframes fadein {
-            0% { opacity: 0.6; }
+            0% { opacity: 0.55; }
             100% { opacity: 1; }
         }
     </style>
     <div id="loading-screen">
         <div style="display: flex; flex-direction: column; align-items: center;">
             <svg class="loading-svg" viewBox="0 0 50 50">
-                <circle cx="25" cy="25" r="20" fill="none" stroke="#d9003c" stroke-width="5" stroke-linecap="round"
+                <circle cx="25" cy="25" r="20" fill="none" stroke="#6366f1" stroke-width="5" stroke-linecap="round"
                     stroke-dasharray="31.4 31.4" stroke-dashoffset="0">
-                    <animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="1s"
+                    <animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.9s"
                         repeatCount="indefinite" />
                 </circle>
             </svg>
-            <div class="loading-text">Loading .....</div>
+            <div class="loading-text">Loading Dashboard...</div>
         </div>
     </div>
     <script>
