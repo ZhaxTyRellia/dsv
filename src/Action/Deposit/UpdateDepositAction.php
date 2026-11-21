@@ -49,9 +49,9 @@ class UpdateDepositAction extends ActionBase
         $success = $this->depositRepo->update($depIndex, $id, $tenor, $interestRate, $minAmount, $description);
 
         if ($success) {
-            $this->flash->add('success', "Data Deposito {$depIndex} berhasil diperbarui!");
+            $this->flash->add('success', "Deposit {$depIndex} data updated successfully!");
         } else {
-            $this->flash->add('danger', 'Gagal memperbarui data Deposito.');
+            $this->flash->add('danger', 'Failed to update deposit data.');
         }
 
         return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '3']);

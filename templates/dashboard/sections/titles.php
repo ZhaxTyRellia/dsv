@@ -18,7 +18,7 @@
                 <div class="valas-header-card-body">
                     <div class="valas-header-input-group">
                         <small>Valas Heading Table</small>
-                        <input type="text" name="title_1" value="<?php echo htmlspecialchars($titles['title_1'] ?? ''); ?>" class="valas-header-input-text" placeholder="Contoh: Informasi Kurs Valuta Asing" required>
+                        <input type="text" name="title_1" value="<?php echo htmlspecialchars($titles['title_1'] ?? ''); ?>" class="valas-header-input-text" placeholder="Example: Foreign Exchange Rate Information" required>
                     </div>
                     <small style="color: var(--text-muted); font-size: 11.5px; margin-top: 6px; display: block;">*This primary title is permanent and always displayed on the Forex signage screen.</small>
                 </div>

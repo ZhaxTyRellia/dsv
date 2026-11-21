@@ -91,16 +91,23 @@ $deviceIdStr = trim((string)($device_id ?? ''));
         }
 
         .emblem-wrap {
-            width: 58px;
-            height: 58px;
-            margin: 0 auto 16px auto;
-            border-radius: 16px;
-            background: linear-gradient(135deg, #6366f1 0%, #0ea5e9 55%, #10b981 100%);
+            width: 68px;
+            height: 68px;
+            margin: 0 auto 14px auto;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.10) 0%, rgba(14, 165, 233, 0.12) 55%, rgba(16, 185, 129, 0.10) 100%);
+            border: 1px solid rgba(14, 165, 233, 0.28);
+            padding: 7px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffffff;
-            box-shadow: 0 10px 22px -4px rgba(14, 165, 233, 0.35);
+            box-shadow: 0 10px 22px -6px rgba(14, 165, 233, 0.25);
+        }
+
+        .emblem-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .pill-row {
@@ -327,12 +334,8 @@ $deviceIdStr = trim((string)($device_id ?? ''));
     <main class="activation-card">
         <div class="card-accent-bar"></div>
         <div class="card-body">
-            <div class="emblem-wrap" aria-hidden="true">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                    <circle cx="12" cy="11" r="2"/>
-                    <path d="M12 13v3"/>
-                </svg>
+            <div class="emblem-wrap">
+                <img src="<?= $basePath; ?>/img/favicon.png" alt="DSV Logo">
             </div>
 
             <div class="pill-row">
@@ -342,7 +345,7 @@ $deviceIdStr = trim((string)($device_id ?? ''));
 
             <h1>Application Activation</h1>
             <p class="subtitle">
-                Salin <strong>Device ID</strong> perangkat ini untuk menghasilkan <strong>Activate Key</strong> resmi, lalu tempel di bawah untuk membuka akses penuh.
+                Copy this device's <strong>Device ID</strong> to generate an official <strong>Activate Key</strong>, then paste it below to unlock full access.
             </p>
 
             <?php if (!empty($flashMessages) && is_array($flashMessages)): ?>

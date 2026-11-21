@@ -11,32 +11,32 @@
             </div>
         </div>
 
-        <!-- MODAL EDIT DEPOSITO -->
+        <!-- EDIT DEPOSIT MODAL -->
         <dialog id="editDepositModal">
             <div class="modal-header-bar"></div>
             <div class="modal-inner-body">
-                <h4 style="margin-top: 0; margin-bottom: 16px; color: var(--text-main); font-size: 1.1rem; font-weight: 800;">Edit Data Deposito</h4>
+                <h4 style="margin-top: 0; margin-bottom: 16px; color: var(--text-main); font-size: 1.1rem; font-weight: 800;">Edit Deposit Data</h4>
                 <form method="POST" action="<?= $urlFor('deposit.edit'); ?>" style="display: flex; flex-direction: column; gap: 12px;">
                     <input type="hidden" name="deposit_index" id="edit_dep_index">
                     <input type="hidden" name="deposit_id" id="edit_dep_id">
 
                     <div class="form-group">
-                        <label>Tenor / Jangka Waktu</label>
+                        <label>Tenor / Term</label>
                         <input type="text" name="tenor" id="edit_dep_tenor" required class="valas-header-input-text">
                     </div>
 
                     <div class="form-group">
-                        <label>Suku Bunga (% p.a)</label>
+                        <label>Interest Rate (% p.a)</label>
                         <input type="number" step="any" name="interest_rate" id="edit_dep_rate" required class="valas-header-input-text">
                     </div>
 
                     <div class="form-group">
-                        <label>Minimal Penempatan (Rp)</label>
+                        <label>Minimum Placement (Rp)</label>
                         <input type="number" step="any" name="min_amount" id="edit_dep_min" class="valas-header-input-text">
                     </div>
 
                     <div class="form-group">
-                        <label>Keterangan</label>
+                        <label>Description</label>
                         <input type="text" name="description" id="edit_dep_desc" class="valas-header-input-text">
                     </div>
 

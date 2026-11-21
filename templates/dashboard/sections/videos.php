@@ -40,7 +40,7 @@
                                     <td><strong><?php echo $no++; ?></strong></td>
                                     <td>
                                         <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
-                                            <video width="130" preload="metadata" class="preview-video-trigger" style="border-radius: 10px; background: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.16); cursor: pointer;" title="Klik untuk putar/jeda dengan suara">
+                                            <video width="130" preload="metadata" class="preview-video-trigger" style="border-radius: 10px; background: #000; box-shadow: 0 4px 10px rgba(0,0,0,0.16); cursor: pointer;" title="Click to play/pause with sound">
                                                 <source src="<?= $basePath; ?>/videos/<?php echo htmlspecialchars((string)$row_video['file_name']); ?>" type="video/mp4">
                                             </video>
                                             <span class="video-file-badge">

@@ -87,7 +87,7 @@
                         <h6 class="identity-section-title">Factory Reset Database</h6>
                         <div class="form-group" style="width: 100%; margin-top: 15px;">
                             <p style="font-size: 0.85rem; color: #64748b; margin: 0 0 12px 0; line-height: 1.5;">
-                                Restore all database tables to initial factory state. All currency rates, deposit tables, custom titles, and video playlists will be truncated to 0, while restoring default identity settings. Lisensi perangkat tetap tersimpan dan tidak ikut terhapus.
+                                Restore all database tables to initial factory state. All currency rates, deposit tables, custom titles, and video playlists will be truncated to 0, while restoring default identity settings. Your device license will remain intact and preserved.
                             </p>
                         </div>
                         <div class="identity-action-group">
@@ -115,7 +115,7 @@
             ?>
             <div class="identity-row">
                 <div class="identity-col-left">
-                    <h6 class="identity-section-title">Status Lisensi Perangkat</h6>
+                    <h6 class="identity-section-title">Device License Status</h6>
                     <div class="license-info-panel">
                         <div class="license-meta-row">
                             <span class="license-badge-active">&#10003; Active &amp; Verified</span>
@@ -137,16 +137,16 @@
                 </div>
 
                 <div class="identity-col-right">
-                    <form action="<?= $urlFor('activation.deactivate'); ?>" method="POST" onsubmit="return confirm('Bongkar lisensi perangkat ini? Aplikasi akan langsung kembali ke layar aktivasi dan membutuhkan Activate Key untuk digunakan kembali.');">
-                        <h6 class="identity-section-title">Pembongkaran Lisensi (Unbind)</h6>
+                    <form action="<?= $urlFor('activation.deactivate'); ?>" method="POST" onsubmit="return confirm('Unbind this device license? The application will immediately return to the activation screen and require an Activate Key to be used again.');">
+                        <h6 class="identity-section-title">Unbind Device License</h6>
                         <div class="form-group" style="width: 100%; margin-top: 15px;">
                             <p style="font-size: 0.85rem; color: #64748b; margin: 0 0 12px 0; line-height: 1.5;">
-                                Lepaskan ikatan Activate Key dari perangkat ini untuk kembali ke halaman <strong>Activate Key</strong> (misalnya sebelum memindahkan lisensi atau uji ulang aktivasi). Data Valas, Deposit, Titles, dan Video Anda tetap aman.
+                                Unbind the stored Activate Key from this device to return to the <strong>Activate Key</strong> screen (for example, before transferring a license or re-testing activation). Your Forex, Deposit, Title, and Video data will remain intact.
                             </p>
                         </div>
                         <div class="identity-action-group">
                             <button type="submit" name="deactivate_license_btn" class="identity-btn-submit identity-btn-unbind">
-                                Bongkar Lisensi
+                                Unbind License
                             </button>
                         </div>
                     </form>

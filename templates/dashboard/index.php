@@ -96,7 +96,7 @@
     <div class="sidebar-wrapper" id="sidebarMenu">
         <!-- Sidebar Logo -->
         <div class="sidebar-logo">
-            <span class="topbar-logo-icon">&#x26ED;</span>
+            <img src="<?= $basePath; ?>/img/favicon.png" alt="DSV Logo" class="sidebar-logo-img">
             <span class="topbar-header-text">Dashboard</span>
         </div>
 
@@ -112,7 +112,7 @@
                 <span class="nav-icon">&#36;</span>Update Valas
             </button>
             <button class="nav-item-btn <?= ($activeTab === 3) ? 'active' : ''; ?>" onclick="switchMenu(3)">
-                <span class="nav-icon">&#127974;</span>Update Deposito
+                <span class="nav-icon">&#127974;</span>Update Deposits
             </button>
             <button class="nav-item-btn <?= ($activeTab === 4) ? 'active' : ''; ?>" onclick="switchMenu(4)">
                 <span class="nav-icon">&#x1F3A8;</span>Themes
@@ -121,7 +121,7 @@
                 <span class="nav-icon">&#x1F4FC;</span>Videos
             </button>
             <button class="nav-item-btn <?= ($activeTab === 6) ? 'active' : ''; ?>" onclick="switchMenu(6)">
-                <span class="nav-icon">&#9881;</span>Setting
+                <span class="nav-icon">&#9881;</span>Settings
             </button>
         </nav>
 

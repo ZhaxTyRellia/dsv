@@ -916,7 +916,7 @@ PEM;
 
             return [
                 'success' => true,
-                'message' => 'Lisensi perangkat berhasil dibongkar. Silakan masukkan Activate Key untuk mengaktifkan kembali.',
+                'message' => 'Device license has been unbound successfully. Please enter an Activate Key to reactivate.',
             ];
         } catch (\Throwable $e) {
             if ($startedTransaction && $pdo->inTransaction()) {

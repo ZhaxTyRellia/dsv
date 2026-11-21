@@ -48,9 +48,9 @@ class CreateDepositAction extends ActionBase
         $success = $this->depositRepo->create($depIndex, $tenor, $interestRate, $minAmount, $description);
 
         if ($success) {
-            $this->flash->add('success', "Data Deposito {$depIndex} berhasil ditambahkan!");
+            $this->flash->add('success', "Deposit {$depIndex} data added successfully!");
         } else {
-            $this->flash->add('danger', 'Gagal menambahkan data Deposito.');
+            $this->flash->add('danger', 'Failed to add deposit data.');
         }
 
         return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '3']);
