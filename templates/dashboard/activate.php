@@ -1,10 +1,11 @@
 <?php
 $platformRaw = strtolower(trim((string)($platform ?? 'unknown')));
 $platformLabel = match ($platformRaw) {
-    'windows' => 'Windows Host',
-    'android_kiosign' => 'Android KioSign',
-    'linux' => 'Linux Host',
-    default => 'Hardware Device',
+    'windows' => 'Windows Server',
+    'linux' => 'Linux Server',
+    'macos' => 'macOS Server',
+    'android', 'android_kiosign' => 'Android Server',
+    default => 'Universal Server',
 };
 $deviceIdStr = trim((string)($device_id ?? ''));
 ?>

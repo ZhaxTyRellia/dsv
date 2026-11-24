@@ -105,10 +105,11 @@
             $licDeviceId = (string)($licenseStatus['device_id'] ?? 'Not Detected');
             $licPlatformRaw = strtolower((string)($licenseStatus['platform'] ?? 'unknown'));
             $licPlatformLabel = match ($licPlatformRaw) {
-                'windows' => 'Windows Host',
-                'android_kiosign' => 'Android KioSign',
-                'linux' => 'Linux Host',
-                default => 'Unknown',
+                'windows' => 'Windows Server',
+                'linux' => 'Linux Server',
+                'macos' => 'macOS Server',
+                'android', 'android_kiosign' => 'Android Server',
+                default => 'Universal Server',
             };
             $licActivatedAt = (string)($licenseStatus['activated_at'] ?? '-');
             $licFp = (string)($licenseStatus['public_key_fp'] ?? '-');

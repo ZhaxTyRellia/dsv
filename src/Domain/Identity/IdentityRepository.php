@@ -565,9 +565,12 @@ PEM;
         return '';
     }
 
-    private function resolveKioSignDeviceId(): ?string
+    private function resolveEnvironmentDeviceId(): ?string
     {
         $candidateKeys = [
+            'DEVICE_UUID',
+            'HARDWARE_UUID',
+            'SERVER_HARDWARE_UUID',
             'ANDROID_HARDWARE_UUID',
             'ANDROID_DEVICE_ID',
             'KIOSIGN_DEVICE_ID',
@@ -591,6 +594,30 @@ PEM;
         }
 
         return null;
+    }
+
+    private function formatHashAsUuid(string $seed): string
+    {
+        $hex = hash('sha256', $seed);
+        return strtoupper(sprintf(
+            '%s-%s-4%s-%s-%s',
+            substr($hex, 0, 8),
+            substr($hex, 8, 4),
+            substr($hex, 13, 3),
+            dechex(0x8 | (hexdec($hex[16]) & 0x3)) . substr($hex, 17, 3),
+            substr($hex, 20, 12)
+        ));
+    }
+
+    private function runShellCommand(string $command): string
+    {
+        if (!function_exists('system')) {
+            return '';
+        }
+
+        ob_start();
+        @system($command);
+        return trim((string)ob_get_clean());
     }
 
     private function verifyStoredRecord(bool $logMismatch = false): bool
@@ -665,26 +692,47 @@ PEM;
             return $this->cachedDeviceId;
         }
 
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            $command = 'powershell -NoProfile -Command "(Get-CimInstance Win32_ComputerSystemProduct).UUID"';
-            ob_start();
-            @system($command);
-            $output = ob_get_clean();
-            $uuid = trim((string)$output);
+        $osFamily = strtoupper(PHP_OS_FAMILY ?: substr(PHP_OS, 0, 3));
 
-            if (preg_match('/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/', $uuid)) {
+        if (str_starts_with($osFamily, 'WIN')) {
+            $this->cachedPlatform = 'windows';
+
+            // 1. Windows CIM motherboard UUID via PowerShell
+            $uuid = $this->runShellCommand('powershell -NoProfile -Command "(Get-CimInstance Win32_ComputerSystemProduct).UUID"');
+            if (
+                preg_match('/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/', $uuid) === 1 &&
+                strtoupper($uuid) !== 'FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF' &&
+                strtoupper($uuid) !== '00000000-0000-0000-0000-000000000000'
+            ) {
                 $this->cachedDeviceId = strtoupper($uuid);
-                $this->cachedPlatform = 'windows';
+                return $this->cachedDeviceId;
+            }
+
+            // 2. Fallback: Windows Cryptography MachineGuid via Registry
+            $regOut = $this->runShellCommand('reg query "HKLM\\SOFTWARE\\Microsoft\\Cryptography" /v MachineGuid 2>NUL');
+            if (preg_match('/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})/', $regOut, $m) === 1) {
+                $this->cachedDeviceId = strtoupper($m[1]);
+                return $this->cachedDeviceId;
+            }
+        } elseif ($osFamily === 'DARWIN') {
+            $this->cachedPlatform = 'macos';
+            $ioOut = $this->runShellCommand('ioreg -rd1 -c IOPlatformExpertDevice');
+            if (preg_match('/"IOPlatformUUID"\s*=\s*"([^"]+)"/', $ioOut, $m) === 1) {
+                $this->cachedDeviceId = strtoupper(trim($m[1]));
                 return $this->cachedDeviceId;
             }
         } else {
-            $kioId = $this->resolveKioSignDeviceId();
-            if ($kioId !== null) {
-                $this->cachedDeviceId = $kioId;
-                $this->cachedPlatform = 'android_kiosign';
+            $isAndroid = @is_file('/system/build.prop') || getenv('ANDROID_ROOT') !== false;
+            $this->cachedPlatform = $isAndroid ? 'android' : 'linux';
+
+            // 1. Environment hardware/device identifier (if provided by server container/runtime)
+            $envId = $this->resolveEnvironmentDeviceId();
+            if ($envId !== null) {
+                $this->cachedDeviceId = $envId;
                 return $this->cachedDeviceId;
             }
 
+            // 2. Standard Linux / Android read-only hardware & machine identifiers
             $candidateFiles = [
                 '/sys/class/dmi/id/product_uuid',
                 '/etc/machine-id',
@@ -716,20 +764,23 @@ PEM;
                         substr($raw, 20, 12)
                     );
                     $this->cachedDeviceId = strtoupper($formatted);
-                    $this->cachedPlatform = 'linux';
                     return $this->cachedDeviceId;
                 }
 
                 if (preg_match('/^[A-Za-z0-9\-_]{8,64}$/', $raw) === 1) {
                     $this->cachedDeviceId = strtoupper($raw);
-                    $this->cachedPlatform = 'linux';
                     return $this->cachedDeviceId;
                 }
             }
         }
 
-        $this->cachedPlatform = 'unknown';
-        return null;
+        // Universal deterministic server fallback (containers / restricted shared hosts)
+        if ($this->cachedPlatform === null) {
+            $this->cachedPlatform = 'server';
+        }
+        $seed = php_uname('s') . '|' . php_uname('n') . '|' . php_uname('m') . '|' . __DIR__;
+        $this->cachedDeviceId = $this->formatHashAsUuid($seed);
+        return $this->cachedDeviceId;
     }
 
     public function getPlatform(): string
