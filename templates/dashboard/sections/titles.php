@@ -12,7 +12,12 @@
             <div class="valas-header-card">
                 <div class="valas-header-card-top">
                     <h5>
-                        <span>&#128178;</span> Valas Title (Permanent Display)
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--indigo)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                            <circle cx="12" cy="12" r="2"></circle>
+                            <path d="M6 12h.01M18 12h.01"></path>
+                        </svg>
+                        Valas Title (Permanent Display)
                     </h5>
                 </div>
                 <div class="valas-header-card-body">
@@ -27,7 +32,13 @@
             <div class="valas-header-card">
                 <div class="valas-header-card-top">
                     <h5>
-                        <span>&#128203;</span> Optional Deposit Titles (Active Option View: <?= $currentOptionInt; ?>)
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--sky)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                            <line x1="8" y1="11" x2="16" y2="11"></line>
+                            <line x1="8" y1="16" x2="13" y2="16"></line>
+                        </svg>
+                        Optional Deposit Titles (Active Option View: <?= $currentOptionInt; ?>)
                     </h5>
                 </div>
                 <div class="valas-header-card-body">

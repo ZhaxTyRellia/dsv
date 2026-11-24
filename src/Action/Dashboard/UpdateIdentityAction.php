@@ -95,7 +95,8 @@ class UpdateIdentityAction extends ActionBase
 
         $status = $this->identityRepo->getStatus();
 
-        return $this->render($response, 'dashboard/activate.php', [
+        return $this->render($response, 'dashboard/index.php', [
+            '__activation_gate' => true,
             'device_id' => $status['device_id'],
             'platform' => $status['platform'],
             'is_licensed' => false,
@@ -118,7 +119,8 @@ class UpdateIdentityAction extends ActionBase
 
         $status = $this->identityRepo->getStatus();
 
-        return $this->render($response, 'dashboard/activate.php', [
+        return $this->render($response, 'dashboard/index.php', [
+            '__activation_gate' => true,
             'device_id' => $status['device_id'],
             'platform' => $status['platform'],
             'is_licensed' => false,

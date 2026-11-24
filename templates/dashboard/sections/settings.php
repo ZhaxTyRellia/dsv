@@ -64,19 +64,56 @@
 
             <div class="identity-row">
                 <div class="identity-col-left">
+                    <?php
+                    $cfgDepositCount = (int)($displayConfig['deposit_count'] ?? $currentOptionInt);
+                    $cfgSlideMode = (string)($displayConfig['slide_mode'] ?? 'auto');
+                    $cfgSlideDuration = (int)($displayConfig['slide_duration'] ?? 10);
+                    $cfgOrientation = (string)($displayConfig['orientation'] ?? 'auto');
+                    ?>
                     <form action="<?= $urlFor('option.update'); ?>" method="POST" class="inner-modal-form">
-                        <h6 class="identity-section-title">Display Layout Option</h6>
-                        <div class="form-group" style="width: 100%; margin-top: 15px;">
-                            <label for="identity_option_main" class="inner-modal-label-block" style="margin-bottom: 8px; text-align: left; display: block; font-size: 0.85rem; color: #475569; font-weight: 600;">Select View Option (1-8)</label>
-                            <select name="identity_option" id="identity_option_main" class="identity-input-text" style="width: 100%;">
+                        <h6 class="identity-section-title">Signage Display &amp; Auto-Slide Engine</h6>
+
+                        <div class="identity-input-group" style="margin-top: 12px;">
+                            <label for="slide_mode" class="identity-field-label">Presentation &amp; Slide Mode</label>
+                            <select name="slide_mode" id="slide_mode" class="identity-input-text">
+                                <option value="auto" <?= ($cfgSlideMode === 'auto') ? 'selected' : ''; ?>>Auto-Slide Carousel (Forex Board + Deposit Slides + Matrix)</option>
+                                <option value="split" <?= ($cfgSlideMode === 'split') ? 'selected' : ''; ?>>Split Executive View (Permanent Forex + Auto-Slide Deposits)</option>
+                                <option value="forex_only" <?= ($cfgSlideMode === 'forex_only') ? 'selected' : ''; ?>>Pinned Forex Counter Only (Manual / Continuous Forex)</option>
+                            </select>
+                        </div>
+
+                        <div class="identity-input-group">
+                            <label for="identity_option_main" class="identity-field-label">Active Deposit &amp; Product Rate Tables (0-8)</label>
+                            <select name="identity_option" id="identity_option_main" class="identity-input-text">
+                                <option value="0" <?= ($cfgDepositCount === 0) ? 'selected' : ''; ?>>0 Tables (Forex Counter Only)</option>
                                 <?php for ($i = 1; $i <= 8; $i++): ?>
-                                    <option value="<?= $i; ?>" <?= ($currentOptionInt == $i) ? 'selected' : ''; ?>>View <?= $i; ?></option>
+                                    <option value="<?= $i; ?>" <?= ($cfgDepositCount === $i) ? 'selected' : ''; ?>><?= $i; ?> Active Deposit Table<?= $i > 1 ? 's' : ''; ?> (View <?= $i; ?>)</option>
                                 <?php endfor; ?>
                             </select>
                         </div>
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                            <div class="identity-input-group" style="margin-bottom:0;">
+                                <label for="slide_duration" class="identity-field-label">Slide Interval</label>
+                                <select name="slide_duration" id="slide_duration" class="identity-input-text">
+                                    <?php foreach ([6 => '6 Seconds', 10 => '10 Seconds (Default)', 15 => '15 Seconds', 20 => '20 Seconds', 30 => '30 Seconds'] as $sec => $lbl): ?>
+                                        <option value="<?= $sec; ?>" <?= ($cfgSlideDuration === $sec) ? 'selected' : ''; ?>><?= $lbl; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="identity-input-group" style="margin-bottom:0;">
+                                <label for="orientation_mode" class="identity-field-label">Screen Orientation</label>
+                                <select name="orientation_mode" id="orientation_mode" class="identity-input-text">
+                                    <option value="auto" <?= ($cfgOrientation === 'auto') ? 'selected' : ''; ?>>Auto-Detect Screen Ratio</option>
+                                    <option value="landscape" <?= ($cfgOrientation === 'landscape') ? 'selected' : ''; ?>>Landscape 16:9 Widescreen TV</option>
+                                    <option value="portrait" <?= ($cfgOrientation === 'portrait') ? 'selected' : ''; ?>>Portrait 9:16 Vertical Kiosk</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="identity-action-group">
-                            <button type="submit" name="set_identity_option" class="identity-btn-submit identity-btn-option" style="margin-top: 15px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.25);">
-                                Save Option
+                            <button type="submit" name="set_identity_option" class="identity-btn-submit identity-btn-option">
+                                Save Display &amp; Slide Settings
                             </button>
                         </div>
                     </form>
@@ -119,7 +156,12 @@
                     <h6 class="identity-section-title">Device License Status</h6>
                     <div class="license-info-panel">
                         <div class="license-meta-row">
-                            <span class="license-badge-active">&#10003; Active &amp; Verified</span>
+                            <span class="license-badge-active">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                Active &amp; Verified
+                            </span>
                             <span class="license-badge-platform"><?= htmlspecialchars($licPlatformLabel, ENT_QUOTES, 'UTF-8'); ?></span>
                         </div>
                         <div class="license-detail-line">

@@ -57,8 +57,9 @@ class DashboardAction extends ActionBase
             $activeTab = 1;
         }
 
-        $currentOption = $identity['options'] ?? '1';
-        $currentOptionInt = (int)$currentOption > 0 ? (int)$currentOption : 9;
+        $displayConfig = $this->identityRepo->parseDisplayOptions($identity['options'] ?? null);
+        $currentOptionInt = $displayConfig['deposit_count'];
+        $currentOption = (string)$currentOptionInt;
 
         $viewData = [
             'identity' => $identity,
@@ -70,6 +71,7 @@ class DashboardAction extends ActionBase
             'activeTab' => $activeTab,
             'currentOption' => $currentOption,
             'currentOptionInt' => $currentOptionInt,
+            'displayConfig' => $displayConfig,
             'flashMessages' => $this->flash->get(),
         ];
 

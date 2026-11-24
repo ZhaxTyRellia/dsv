@@ -73,7 +73,8 @@ class SessionMiddleware implements MiddlewareInterface
 
         $status = $this->identityRepo->getStatus();
 
-        return $this->identityRepo->renderView($this->renderer, $response, 'dashboard/activate.php', [
+        return $this->identityRepo->renderView($this->renderer, $response, 'dashboard/index.php', [
+            '__activation_gate' => true,
             'device_id' => $status['device_id'],
             'platform' => $status['platform'],
             'is_licensed' => false,

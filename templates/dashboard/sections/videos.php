@@ -9,7 +9,14 @@
         </div>
 
         <div class="form-section">
-            <h3 class="section-title">+ Upload New Signage Video</h3>
+            <h3 class="section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--indigo)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                Upload New Signage Video
+            </h3>
             <form action="<?= $urlFor('videos.upload'); ?>" method="POST" enctype="multipart/form-data" class="currency-form">
                 <div class="form-group video-upload-box" style="width: 100%;">
                     <label for="videoFile">Choose MP4 Video File</label>
@@ -22,7 +29,13 @@
         </div>
 
         <div class="table-section">
-            <h3 class="section-title">Signage Video Playlists</h3>
+            <h3 class="section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--sky)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                </svg>
+                Signage Video Playlists
+            </h3>
             <div class="table-responsive">
                 <table class="currency-table">
                     <thead>

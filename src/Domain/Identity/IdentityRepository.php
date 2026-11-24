@@ -220,6 +220,7 @@ PEM;
             $this->migrateAndSeedDatabase($pdo, false);
         } else {
             $this->ensureIdentityLicenseColumns($pdo);
+            $this->seedDefaultBumnData($pdo);
         }
 
         if ($requestedPath !== '' && $requestedPath === $internalPath) {
@@ -367,10 +368,10 @@ PEM;
                     ');
                     $resetStmt->execute([
                         ':logo' => 'default.png',
-                        ':title' => 'Display Signage',
-                        ':name' => 'Sub Title / Unit Name',
-                        ':marquee' => 'Selamat Datang di Layanan Informasi Digital',
-                        ':options' => '1',
+                        ':title' => 'BANK NUSANTARA PERSERO (BUMN)',
+                        ':name' => 'KC Utama Jakarta • Treasury & Foreign Exchange Division',
+                        ':marquee' => 'Welcome to Official Digital Signage Forex & Treasury Counter Service • Rates are indicative and subject to market movement • Contact our Treasury Desk for institutional transactions',
+                        ':options' => '2|auto|10|auto',
                         ':themes' => 'show-0.css',
                     ]);
                 } else {
@@ -381,8 +382,11 @@ PEM;
                 if ($hasSequence !== false) {
                     $pdo->exec("DELETE FROM sqlite_sequence WHERE name IN ('deposit_1','deposit_2','deposit_3','deposit_4','deposit_5','deposit_6','deposit_7','deposit_8','titles','valas','videos')");
                 }
+
+                $this->seedDefaultBumnData($pdo);
             } else {
                 $this->seedDefaultIdentity($pdo);
+                $this->seedDefaultBumnData($pdo);
             }
 
             if ($startedTransaction && $pdo->inTransaction()) {
@@ -525,13 +529,163 @@ PEM;
             $stmt->execute([
                 ':id' => 1,
                 ':logo' => 'default.png',
-                ':title' => 'Display Signage',
-                ':name' => 'Sub Title / Unit Name',
-                ':marquee' => 'Selamat Datang di Layanan Informasi Digital',
-                ':options' => '1',
+                ':title' => 'BANK NUSANTARA PERSERO (BUMN)',
+                ':name' => 'KC Utama Jakarta • Treasury & Foreign Exchange Division',
+                ':marquee' => 'Welcome to Official Digital Signage Forex & Treasury Counter Service • Rates are indicative and subject to market movement • Contact our Treasury Desk for institutional transactions',
+                ':options' => '2|auto|10|auto',
                 ':themes' => 'show-0.css',
             ]);
+            return;
         }
+
+        // Upgrade legacy placeholder identity values to BUMN default profile
+        $legacyCheck = $pdo->query('SELECT "title", "options" FROM "identity" WHERE "id" = 1 LIMIT 1')->fetch();
+        if (is_array($legacyCheck) && ($legacyCheck['title'] ?? '') === 'Display Signage' && ($legacyCheck['options'] ?? '') === '1') {
+            $stmt = $pdo->prepare('
+                UPDATE "identity"
+                SET "title" = :title,
+                    "name" = :name,
+                    "marquee" = :marquee,
+                    "options" = :options
+                WHERE "id" = 1
+            ');
+            $stmt->execute([
+                ':title' => 'BANK NUSANTARA PERSERO (BUMN)',
+                ':name' => 'KC Utama Jakarta • Treasury & Foreign Exchange Division',
+                ':marquee' => 'Welcome to Official Digital Signage Forex & Treasury Counter Service • Rates are indicative and subject to market movement • Contact our Treasury Desk for institutional transactions',
+                ':options' => '2|auto|10|auto',
+            ]);
+        }
+    }
+
+    public function seedDefaultBumnData(PDO $pdo): void
+    {
+        try {
+            $hasTitles = (int)$pdo->query("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='titles'")->fetchColumn();
+            if ($hasTitles > 0 && (int)$pdo->query('SELECT COUNT(*) FROM "titles"')->fetchColumn() === 0) {
+                $stmtTitles = $pdo->prepare('
+                    INSERT INTO "titles" ("title_1", "title_2", "title_3", "title_4", "title_5", "title_6", "title_7", "title_8", "title_9")
+                    VALUES (:t1, :t2, :t3, :t4, :t5, :t6, :t7, :t8, :t9)
+                ');
+                $stmtTitles->execute([
+                    ':t1' => 'FOREIGN EXCHANGE COUNTER RATES',
+                    ':t2' => 'IDR TIME DEPOSIT RATES (DEPOSITO RUPIAH)',
+                    ':t3' => 'FOREIGN CURRENCY DEPOSIT (DEPOSITO VALAS)',
+                    ':t4' => 'CORPORATE & GIRO SPECIAL RATES',
+                    ':t5' => 'PRIORITY WEALTH MANAGEMENT RATES',
+                    ':t6' => 'TREASURY BOND & SUKUK INDICATIVE YIELD',
+                    ':t7' => 'TRADE FINANCE & LC REFERENCE RATES',
+                    ':t8' => 'MONEY MARKET & JIBOR REFERENCE',
+                    ':t9' => 'SPECIAL PROMOTIONAL PROGRAM RATES',
+                ]);
+            }
+
+            $hasValas = (int)$pdo->query("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='valas'")->fetchColumn();
+            if ($hasValas > 0 && (int)$pdo->query('SELECT COUNT(*) FROM "valas"')->fetchColumn() === 0) {
+                $defaultValas = [
+                    ['USD', 'US Dollar', 'us', 15750.00, 15950.00],
+                    ['SGD', 'Singapore Dollar', 'sg', 11720.00, 11890.00],
+                    ['EUR', 'Euro', 'eu', 17050.00, 17280.00],
+                    ['AUD', 'Australian Dollar', 'au', 10280.00, 10460.00],
+                    ['GBP', 'British Pound Sterling', 'gb', 19920.00, 20210.00],
+                    ['JPY', 'Japanese Yen (100)', 'jp', 10420.00, 10610.00],
+                    ['CNY', 'Chinese Yuan', 'cn', 2175.00, 2225.00],
+                    ['SAR', 'Saudi Riyal', 'sa', 4190.00, 4265.00],
+                    ['MYR', 'Malaysian Ringgit', 'my', 3540.00, 3615.00],
+                    ['HKD', 'Hong Kong Dollar', 'hk', 2020.00, 2060.00],
+                ];
+                $stmtValas = $pdo->prepare('
+                    INSERT INTO "valas" ("currency_code", "currency_name", "flag_image", "buy_rate", "sell_rate")
+                    VALUES (:code, :name, :flag, :buy, :sell)
+                ');
+                foreach ($defaultValas as $v) {
+                    $stmtValas->execute([
+                        ':code' => $v[0],
+                        ':name' => $v[1],
+                        ':flag' => $v[2],
+                        ':buy' => $v[3],
+                        ':sell' => $v[4],
+                    ]);
+                }
+            }
+
+            $hasDep1 = (int)$pdo->query("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='deposit_1'")->fetchColumn();
+            if ($hasDep1 > 0 && (int)$pdo->query('SELECT COUNT(*) FROM "deposit_1"')->fetchColumn() === 0) {
+                $dep1Rows = [
+                    ['1 Month', 4.25, 10000000, 'Automatic Roll Over (ARO)'],
+                    ['3 Months', 4.75, 10000000, 'Guaranteed Counter Rate'],
+                    ['6 Months', 5.00, 25000000, 'Priority & Corporate Tier'],
+                    ['12 Months', 5.25, 50000000, 'Annual Prime Time Deposit'],
+                    ['24 Months', 5.50, 100000000, 'Institutional Treasury Lock'],
+                ];
+                $stmtDep1 = $pdo->prepare('
+                    INSERT INTO "deposit_1" ("tenor", "interest_rate", "min_amount", "description")
+                    VALUES (:tenor, :rate, :min, :desc)
+                ');
+                foreach ($dep1Rows as $r) {
+                    $stmtDep1->execute([':tenor' => $r[0], ':rate' => $r[1], ':min' => $r[2], ':desc' => $r[3]]);
+                }
+            }
+
+            $hasDep2 = (int)$pdo->query("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='deposit_2'")->fetchColumn();
+            if ($hasDep2 > 0 && (int)$pdo->query('SELECT COUNT(*) FROM "deposit_2"')->fetchColumn() === 0) {
+                $dep2Rows = [
+                    ['1 Month (USD)', 2.25, 1000, 'Min. Placement USD 1,000'],
+                    ['3 Months (USD)', 2.75, 1000, 'Min. Placement USD 1,000'],
+                    ['6 Months (USD)', 3.10, 5000, 'Corporate Forex Tier'],
+                    ['12 Months (USD)', 3.50, 10000, 'Institutional Treasury Rate'],
+                    ['6 Months (SGD)', 2.40, 2000, 'Singapore Dollar Time Deposit'],
+                ];
+                $stmtDep2 = $pdo->prepare('
+                    INSERT INTO "deposit_2" ("tenor", "interest_rate", "min_amount", "description")
+                    VALUES (:tenor, :rate, :min, :desc)
+                ');
+                foreach ($dep2Rows as $r) {
+                    $stmtDep2->execute([':tenor' => $r[0], ':rate' => $r[1], ':min' => $r[2], ':desc' => $r[3]]);
+                }
+            }
+        } catch (\Throwable $e) {
+            // Ignore seed errors on partial initialization
+        }
+    }
+
+    /**
+     * Parses composite display option string ("<depositCount>|<slideMode>|<slideDuration>|<orientation>")
+     * while remaining 100% backward compatible with legacy single-digit strings ("1".."8").
+     *
+     * @return array{deposit_count: int, slide_mode: string, slide_duration: int, orientation: string, raw: string}
+     */
+    public function parseDisplayOptions(?string $rawOptions): array
+    {
+        $raw = trim((string)($rawOptions ?? '2|auto|10|auto'));
+        if ($raw === '') {
+            $raw = '2|auto|10|auto';
+        }
+
+        $parts = explode('|', $raw);
+        $count = isset($parts[0]) && is_numeric($parts[0]) ? (int)$parts[0] : 2;
+        $count = max(0, min(8, $count));
+
+        $mode = strtolower(trim((string)($parts[1] ?? 'auto')));
+        if (!in_array($mode, ['auto', 'split', 'forex_only'], true)) {
+            $mode = 'auto';
+        }
+
+        $duration = isset($parts[2]) && is_numeric($parts[2]) ? (int)$parts[2] : 10;
+        $duration = max(4, min(60, $duration));
+
+        $orientation = strtolower(trim((string)($parts[3] ?? 'auto')));
+        if (!in_array($orientation, ['auto', 'landscape', 'portrait'], true)) {
+            $orientation = 'auto';
+        }
+
+        return [
+            'deposit_count' => $count,
+            'slide_mode' => $mode,
+            'slide_duration' => $duration,
+            'orientation' => $orientation,
+            'raw' => "{$count}|{$mode}|{$duration}|{$orientation}",
+        ];
     }
 
     private function getStoredLicenseRecord(PDO $pdo): ?array
@@ -654,8 +808,16 @@ PEM;
             throw new RuntimeException('Fatal System Error: Core application runtime not initialized.');
         }
 
-        if ($template !== 'dashboard/activate.php') {
+        $isActivationGate = ($template === 'dashboard/index.php' && !empty($data['__activation_gate']));
+        if (!$isActivationGate) {
             $this->assertRuntimeAuthorized();
+        } else {
+            unset($data['identity'], $data['titles'], $data['valasList'], $data['depositsData'], $data['videosList']);
+            $data['licenseStatus'] = [
+                'is_licensed' => false,
+                'device_id' => $data['device_id'] ?? null,
+                'platform' => $data['platform'] ?? 'unknown',
+            ];
         }
 
         return $renderer->render($response, $template, $data);

@@ -83,7 +83,14 @@
         </div>
 
         <div class="form-section">
-            <h3 class="section-title">+ Add New Currency Rate</h3>
+            <h3 class="section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--indigo)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+                Add New Currency Rate
+            </h3>
             <form action="<?= $urlFor('valas.create'); ?>" method="POST" class="currency-form">
                 <div class="form-group fg-code">
                     <label for="currencyCodeAndFlag">Currency &amp; Flag</label>
@@ -144,7 +151,17 @@
         </div>
 
         <div class="table-section">
-            <h3 class="section-title">Currency Exchange Rate List</h3>
+            <h3 class="section-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--sky)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                    <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                    <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                    <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
+                Currency Exchange Rate List
+            </h3>
             <div class="table-responsive">
                 <table class="currency-table">
                     <thead>

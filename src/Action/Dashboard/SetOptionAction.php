@@ -29,17 +29,32 @@ class SetOptionAction extends ActionBase
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $body = (array)($request->getParsedBody() ?? []);
-        $option = trim((string)($body['identity_option'] ?? ''));
 
-        if (in_array($option, ['1', '2', '3', '4', '5', '6', '7', '8', '9'], true)) {
-            $success = $this->identityRepo->updateOption($option);
-            if ($success) {
-                $this->flash->add('success', 'Option updated successfully.');
-            } else {
-                $this->flash->add('danger', 'Failed to update option.');
-            }
+        $depositCount = isset($body['identity_option']) && is_numeric($body['identity_option'])
+            ? max(0, min(8, (int)$body['identity_option']))
+            : 2;
+
+        $slideMode = strtolower(trim((string)($body['slide_mode'] ?? 'auto')));
+        if (!in_array($slideMode, ['auto', 'split', 'forex_only'], true)) {
+            $slideMode = 'auto';
+        }
+
+        $slideDuration = isset($body['slide_duration']) && is_numeric($body['slide_duration'])
+            ? max(4, min(60, (int)$body['slide_duration']))
+            : 10;
+
+        $orientation = strtolower(trim((string)($body['orientation_mode'] ?? 'auto')));
+        if (!in_array($orientation, ['auto', 'landscape', 'portrait'], true)) {
+            $orientation = 'auto';
+        }
+
+        $compositeOption = "{$depositCount}|{$slideMode}|{$slideDuration}|{$orientation}";
+        $success = $this->identityRepo->updateOption($compositeOption);
+
+        if ($success) {
+            $this->flash->add('success', 'Signage display layout and auto-slide settings updated successfully.');
         } else {
-            $this->flash->add('warning', 'Invalid option selected.');
+            $this->flash->add('danger', 'Failed to update display layout settings.');
         }
 
         return $this->redirectToRoute($response, 'dashboard', [], ['tab' => '6']);

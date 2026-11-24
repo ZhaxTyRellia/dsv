@@ -97,7 +97,8 @@ abstract class ActionBase
 
     protected function render(ResponseInterface $response, string $template, array $data = []): ResponseInterface
     {
-        if ($template !== 'dashboard/activate.php') {
+        $isActivationGate = ($template === 'dashboard/index.php' && !empty($data['__activation_gate']));
+        if (!$isActivationGate) {
             $this->verifyRuntimeGuard();
         }
 

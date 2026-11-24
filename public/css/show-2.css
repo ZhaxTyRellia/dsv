@@ -1,0 +1,25 @@
+/* ========================================================================= */
+/* THEME 2: CORPORATE COBALT BLUE & ORANGE (BRI / NATIONAL BUMN STYLE)       */
+/* ========================================================================= */
+@import url("show-0.css");
+
+:root {
+    --sig-bg: radial-gradient(circle at 15% 15%, #003594 0%, #07193f 55%, #030b1c 100%);
+    --sig-header-grad: linear-gradient(90deg, #002b7f 0%, #0047ab 58%, #ea580c 100%);
+    --sig-header-border: #f97316;
+    --sig-card-bg: rgba(10, 28, 68, 0.88);
+    --sig-card-alt: rgba(6, 18, 46, 0.94);
+    --sig-card-border: rgba(249, 115, 22, 0.3);
+    --sig-board-head: linear-gradient(90deg, #0038a8 0%, #0284c7 60%, #ea580c 100%);
+    --sig-deposit-head: linear-gradient(90deg, #c2410c 0%, #f97316 55%, #0038a8 100%);
+    --sig-table-th: rgba(6, 17, 42, 0.96);
+    --sig-row-even: rgba(2, 132, 199, 0.18);
+    --sig-row-border: rgba(148, 163, 184, 0.14);
+    --sig-gold: #fb923c;
+    --sig-accent: #38bdf8;
+    --sig-buy: #34d399;
+    --sig-sell: #fbbf24;
+    --sig-footer-grad: linear-gradient(90deg, #002b7f 0%, #0038a8 65%, #c2410c 100%);
+    --sig-badge-bg: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    --sig-badge-text: #ffffff;
+}
