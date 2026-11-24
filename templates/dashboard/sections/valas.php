@@ -180,9 +180,11 @@
                                 <tr>
                                     <td>
                                         <?php if (!empty($row_valas['flag_image'])): ?>
-                                            <img src="<?= $basePath; ?>/img/flags/svg/<?php echo htmlspecialchars((string)$row_valas['flag_image']); ?>.svg"
-                                                alt="<?php echo htmlspecialchars((string)$row_valas['currency_code']); ?> Flag"
-                                                style="width: 32px; height: auto; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.12); vertical-align: middle;">
+                                            <span class="flag-wave">
+                                                <img src="<?= $basePath; ?>/img/flags/svg/<?php echo htmlspecialchars((string)$row_valas['flag_image']); ?>.svg"
+                                                    alt="<?php echo htmlspecialchars((string)$row_valas['currency_code']); ?> Flag"
+                                                    class="flag-img-dash">
+                                            </span>
                                         <?php else: ?>
                                             <span style="color: var(--text-muted); font-size: 12px; font-style: italic;">No Flag</span>
                                         <?php endif; ?>

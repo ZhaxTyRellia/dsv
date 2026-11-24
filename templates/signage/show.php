@@ -193,7 +193,9 @@ $depositSlides = $activeDepositSlides ?? [];
                             <div class="spotlight-head">
                                 <div class="spotlight-curr">
                                     <?php if (!empty($sp['flag_image'])): ?>
-                                        <img src="<?= $basePath; ?>/img/flags/svg/<?= htmlspecialchars((string)$sp['flag_image'], ENT_QUOTES, 'UTF-8'); ?>.svg" alt="" class="flag-img-sm">
+                                        <span class="flag-wave flag-wave-sm">
+                                            <img src="<?= $basePath; ?>/img/flags/svg/<?= htmlspecialchars((string)$sp['flag_image'], ENT_QUOTES, 'UTF-8'); ?>.svg" alt="" class="flag-img-sm">
+                                        </span>
                                     <?php endif; ?>
                                     <span class="spotlight-code"><?= htmlspecialchars((string)($sp['currency_code'] ?? ''), ENT_QUOTES, 'UTF-8'); ?></span>
                                 </div>
@@ -270,7 +272,9 @@ $depositSlides = $activeDepositSlides ?? [];
                                             <td style="text-align: left; padding-left: 18px;">
                                                 <div class="curr-cell-wrap">
                                                     <?php if (!empty($kurs['flag_image'])): ?>
-                                                        <img src="<?= $basePath; ?>/img/flags/svg/<?= htmlspecialchars((string)$kurs['flag_image'], ENT_QUOTES, 'UTF-8'); ?>.svg" alt="Flag" class="flag-img">
+                                                        <span class="flag-wave">
+                                                            <img src="<?= $basePath; ?>/img/flags/svg/<?= htmlspecialchars((string)$kurs['flag_image'], ENT_QUOTES, 'UTF-8'); ?>.svg" alt="Flag" class="flag-img">
+                                                        </span>
                                                     <?php endif; ?>
                                                     <div class="curr-text-group">
                                                         <span class="currency-code"><?= htmlspecialchars((string)($kurs['currency_code'] ?? ''), ENT_QUOTES, 'UTF-8'); ?></span>
@@ -378,7 +382,9 @@ $depositSlides = $activeDepositSlides ?? [];
                                         <div class="matrix-item-top">
                                             <div class="curr-cell-wrap">
                                                 <?php if (!empty($mKurs['flag_image'])): ?>
-                                                    <img src="<?= $basePath; ?>/img/flags/svg/<?= htmlspecialchars((string)$mKurs['flag_image'], ENT_QUOTES, 'UTF-8'); ?>.svg" alt="" class="flag-img">
+                                                    <span class="flag-wave">
+                                                        <img src="<?= $basePath; ?>/img/flags/svg/<?= htmlspecialchars((string)$mKurs['flag_image'], ENT_QUOTES, 'UTF-8'); ?>.svg" alt="" class="flag-img">
+                                                    </span>
                                                 <?php endif; ?>
                                                 <div>
                                                     <div class="currency-code"><?= htmlspecialchars((string)($mKurs['currency_code'] ?? ''), ENT_QUOTES, 'UTF-8'); ?></div>

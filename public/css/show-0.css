@@ -369,9 +369,12 @@ body[data-orientation="landscape"] .signage-media-column {
 }
 
 .flag-img-sm {
-    width: 22px;
-    height: auto;
+    width: 24px;
+    height: 16px;
+    object-fit: cover;
     border-radius: 3px;
+    display: block;
+    animation: flagInnerBillow 2.6s ease-in-out infinite;
 }
 
 .spotlight-code {
@@ -612,12 +615,141 @@ body[data-orientation="landscape"] .signage-media-column {
 }
 
 .flag-img {
-    height: 22px;
-    width: 32px;
+    height: 24px;
+    width: 36px;
     object-fit: cover;
     border-radius: 4px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+    display: block;
     flex-shrink: 0;
+    animation: flagInnerBillow 2.6s ease-in-out infinite;
+}
+
+/* 3D WAVING CLOTH FLAG ANIMATION */
+.flag-wave {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+    transform-origin: 0% 50%;
+    transform-style: preserve-3d;
+    will-change: transform;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+    animation: flagClothWave3D 2.6s ease-in-out infinite;
+}
+
+.flag-wave-sm {
+    border-radius: 3px;
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.4);
+}
+
+.flag-wave::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    z-index: 3;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(148, 163, 184, 0.35), rgba(255, 255, 255, 0.7));
+    pointer-events: none;
+}
+
+.flag-wave::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(
+        106deg,
+        rgba(0, 0, 0, 0.24) 0%,
+        rgba(255, 255, 255, 0.36) 20%,
+        rgba(0, 0, 0, 0.28) 42%,
+        rgba(255, 255, 255, 0.32) 66%,
+        rgba(0, 0, 0, 0.26) 88%,
+        rgba(255, 255, 255, 0.22) 100%
+    );
+    background-size: 240% 100%;
+    mix-blend-mode: soft-light;
+    animation: flagRippleSheen 2.6s linear infinite;
+}
+
+@keyframes flagClothWave3D {
+    0% {
+        transform: perspective(150px) rotateY(0deg) rotateZ(0deg) skewY(0deg) scaleX(1);
+    }
+    25% {
+        transform: perspective(150px) rotateY(-14deg) rotateZ(-1.6deg) skewY(3.2deg) scaleX(0.96);
+    }
+    50% {
+        transform: perspective(150px) rotateY(6deg) rotateZ(0.8deg) skewY(-2.4deg) scaleX(1.02);
+    }
+    75% {
+        transform: perspective(150px) rotateY(-10deg) rotateZ(1.5deg) skewY(2.6deg) scaleX(0.97);
+    }
+    100% {
+        transform: perspective(150px) rotateY(0deg) rotateZ(0deg) skewY(0deg) scaleX(1);
+    }
+}
+
+@keyframes flagInnerBillow {
+    0%, 100% {
+        transform: scale(1.04) skewX(0deg) translateY(0px);
+    }
+    25% {
+        transform: scale(1.06, 1.03) skewX(-3deg) translateY(-0.7px);
+    }
+    50% {
+        transform: scale(1.04, 1.05) skewX(2.5deg) translateY(0.6px);
+    }
+    75% {
+        transform: scale(1.06, 1.02) skewX(-2deg) translateY(-0.5px);
+    }
+}
+
+@keyframes flagRippleSheen {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -40% 0;
+    }
+}
+
+.kurs-table tbody tr:nth-child(2n) .flag-wave,
+.kurs-table tbody tr:nth-child(2n) .flag-img,
+.kurs-table tbody tr:nth-child(2n) .flag-wave::after,
+.spotlight-card:nth-child(2n) .flag-wave,
+.spotlight-card:nth-child(2n) .flag-img-sm,
+.spotlight-card:nth-child(2n) .flag-wave::after,
+.matrix-item-card:nth-child(2n) .flag-wave,
+.matrix-item-card:nth-child(2n) .flag-img,
+.matrix-item-card:nth-child(2n) .flag-wave::after {
+    animation-delay: -0.75s;
+}
+
+.kurs-table tbody tr:nth-child(3n) .flag-wave,
+.kurs-table tbody tr:nth-child(3n) .flag-img,
+.kurs-table tbody tr:nth-child(3n) .flag-wave::after,
+.spotlight-card:nth-child(3n) .flag-wave,
+.spotlight-card:nth-child(3n) .flag-img-sm,
+.spotlight-card:nth-child(3n) .flag-wave::after,
+.matrix-item-card:nth-child(3n) .flag-wave,
+.matrix-item-card:nth-child(3n) .flag-img,
+.matrix-item-card:nth-child(3n) .flag-wave::after {
+    animation-delay: -1.45s;
+}
+
+.kurs-table tbody tr:nth-child(5n) .flag-wave,
+.kurs-table tbody tr:nth-child(5n) .flag-img,
+.kurs-table tbody tr:nth-child(5n) .flag-wave::after,
+.matrix-item-card:nth-child(5n) .flag-wave,
+.matrix-item-card:nth-child(5n) .flag-img,
+.matrix-item-card:nth-child(5n) .flag-wave::after {
+    animation-delay: -2.1s;
 }
 
 .currency-code {

@@ -540,3 +540,110 @@ dialog::backdrop {
 .modal-inner-body {
     padding: 24px 26px;
 }
+
+/* ========================================================================= */
+/* 3D WAVING CLOTH FLAG ANIMATION (DASHBOARD CURRENCY TABLE)                 */
+/* ========================================================================= */
+.flag-img-dash {
+    width: 36px;
+    height: 24px;
+    object-fit: cover;
+    border-radius: 4px;
+    display: block;
+    animation: flagInnerBillowDash 2.6s ease-in-out infinite;
+}
+
+.flag-wave {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    overflow: hidden;
+    vertical-align: middle;
+    transform-origin: 0% 50%;
+    transform-style: preserve-3d;
+    will-change: transform;
+    box-shadow: 0 3px 8px rgba(15, 23, 42, 0.22);
+    animation: flagClothWaveDash 2.6s ease-in-out infinite;
+}
+
+.flag-wave::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    z-index: 3;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(148, 163, 184, 0.4), rgba(255, 255, 255, 0.75));
+    pointer-events: none;
+}
+
+.flag-wave::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(
+        106deg,
+        rgba(0, 0, 0, 0.22) 0%,
+        rgba(255, 255, 255, 0.36) 20%,
+        rgba(0, 0, 0, 0.26) 42%,
+        rgba(255, 255, 255, 0.32) 66%,
+        rgba(0, 0, 0, 0.24) 88%,
+        rgba(255, 255, 255, 0.22) 100%
+    );
+    background-size: 240% 100%;
+    mix-blend-mode: soft-light;
+    animation: flagRippleSheenDash 2.6s linear infinite;
+}
+
+@keyframes flagClothWaveDash {
+    0%, 100% {
+        transform: perspective(150px) rotateY(0deg) rotateZ(0deg) skewY(0deg) scaleX(1);
+    }
+    25% {
+        transform: perspective(150px) rotateY(-14deg) rotateZ(-1.5deg) skewY(3deg) scaleX(0.96);
+    }
+    50% {
+        transform: perspective(150px) rotateY(6deg) rotateZ(0.8deg) skewY(-2.2deg) scaleX(1.02);
+    }
+    75% {
+        transform: perspective(150px) rotateY(-10deg) rotateZ(1.4deg) skewY(2.5deg) scaleX(0.97);
+    }
+}
+
+@keyframes flagInnerBillowDash {
+    0%, 100% {
+        transform: scale(1.04) skewX(0deg) translateY(0px);
+    }
+    25% {
+        transform: scale(1.06, 1.03) skewX(-3deg) translateY(-0.6px);
+    }
+    50% {
+        transform: scale(1.04, 1.05) skewX(2.4deg) translateY(0.5px);
+    }
+    75% {
+        transform: scale(1.06, 1.02) skewX(-2deg) translateY(-0.4px);
+    }
+}
+
+@keyframes flagRippleSheenDash {
+    0% { background-position: 200% 0; }
+    100% { background-position: -40% 0; }
+}
+
+.currency-table tbody tr:nth-child(2n) .flag-wave,
+.currency-table tbody tr:nth-child(2n) .flag-img-dash,
+.currency-table tbody tr:nth-child(2n) .flag-wave::after {
+    animation-delay: -0.8s;
+}
+
+.currency-table tbody tr:nth-child(3n) .flag-wave,
+.currency-table tbody tr:nth-child(3n) .flag-img-dash,
+.currency-table tbody tr:nth-child(3n) .flag-wave::after {
+    animation-delay: -1.5s;
+}
+
