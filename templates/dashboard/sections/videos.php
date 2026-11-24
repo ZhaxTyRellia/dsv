@@ -19,9 +19,9 @@
             </h3>
             <form action="<?= $urlFor('videos.upload'); ?>" method="POST" enctype="multipart/form-data" class="currency-form">
                 <div class="form-group video-upload-box" style="width: 100%;">
-                    <label for="videoFile">Choose MP4 Video File</label>
-                    <input type="file" id="videoFile" name="video_file" accept="video/mp4" required style="width: 100%; height: auto; padding: 9px 12px;">
-                    <small style="color: var(--text-muted); margin-top: 6px; font-size: 12px;">Supported Format: .mp4 only (Max Size: 50MB)</small>
+                    <label for="videoFile">Choose Promotional / Commercial Video File (MP4 / WebM)</label>
+                    <input type="file" id="videoFile" name="video_file" accept="video/mp4,video/webm" required style="width: 100%; height: auto; padding: 9px 12px;">
+                    <small style="color: var(--text-muted); margin-top: 6px; font-size: 12px;">Supported Formats: .mp4, .webm (Max Size: 200MB • Auto-loops continuously on Digital Signage)</small>
                 </div>
 
                 <button type="submit" name="submit_video" class="btn-submit" style="margin-top: 6px;">Upload Video</button>

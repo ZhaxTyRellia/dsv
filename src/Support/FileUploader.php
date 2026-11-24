@@ -12,8 +12,8 @@ class FileUploader
     private const ALLOWED_LOGO_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
     private const MAX_LOGO_SIZE = 5 * 1024 * 1024; // 5 MB
 
-    private const ALLOWED_VIDEO_EXTENSIONS = ['mp4'];
-    private const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50 MB
+    private const ALLOWED_VIDEO_EXTENSIONS = ['mp4', 'webm'];
+    private const MAX_VIDEO_SIZE = 200 * 1024 * 1024; // 200 MB
 
     public function uploadLogo(UploadedFileInterface $file, string $targetDir): ?string
     {
@@ -53,14 +53,14 @@ class FileUploader
 
         $size = $file->getSize();
         if ($size === null || $size <= 0 || $size > self::MAX_VIDEO_SIZE) {
-            throw new RuntimeException('Video file size exceeds the allowed limit (50MB).');
+            throw new RuntimeException('Video file size exceeds the allowed limit (200MB).');
         }
 
         $filename = (string)$file->getClientFilename();
         $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
         if (!in_array($ext, self::ALLOWED_VIDEO_EXTENSIONS, true)) {
-            throw new RuntimeException('Invalid video file extension. Only .mp4 is allowed.');
+            throw new RuntimeException('Invalid video file extension. Allowed formats: .mp4, .webm.');
         }
 
         if (!is_dir($targetDir)) {
