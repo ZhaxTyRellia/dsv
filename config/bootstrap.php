@@ -3,17 +3,9 @@
 declare(strict_types=1);
 
 use App\Domain\Identity\IdentityRepository;
-use Dotenv\Dotenv;
 use Slim\Factory\AppFactory;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
-
-// Load environment variables if .env file exists
-$envFile = dirname(__DIR__) . '/.env';
-if (file_exists($envFile)) {
-    $dotenv = Dotenv::createImmutable(dirname(__DIR__));
-    $dotenv->safeLoad();
-}
 
 // Build PHP-DI Container
 $container = require __DIR__ . '/container.php';

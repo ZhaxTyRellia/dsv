@@ -1,4 +1,5 @@
 Options -Indexes
+DirectoryIndex public/index.php index.php
 
 RewriteEngine On
 
@@ -7,15 +8,18 @@ RewriteRule ^(storage|config|src|templates|vendor|\.git)(/|$) - [NC,F,L]
 RewriteRule (^|/)\.(env|htaccess|git) - [NC,F,L]
 RewriteRule \.(db|db-wal|db-shm|db-journal|sqlite|sqlite3|sql|bak|log)$ - [NC,F,L]
 
+# Route root directory (/) or /index.php directly to public/index.php
+RewriteRule ^(index\.php)?$ public/index.php [QSA,L]
+
 # Serve static assets directly from public/ directory
 RewriteRule ^(css|img|js|videos)/(.*)$ public/$1/$2 [L]
 RewriteRule ^app/(css|img|js|videos)/(.*)$ public/$1/$2 [L]
 
-# Allow direct access to static files that exist on disk
+# Allow direct access to existing static files inside public/
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^ - [L]
 
-# Route all other requests to public/index.php
+# Route all other virtual paths to public/index.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ public/index.php [QSA,L]
